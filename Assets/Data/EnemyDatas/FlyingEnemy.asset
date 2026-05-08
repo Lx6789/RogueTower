@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d3db4384a4cc14ba5bd548088c0389, type: 3}
+  m_Name: FlyingEnemy
+  m_EditorClassIdentifier: 
+  enemyName: "\u7A7A\u4E2D\u98DE\u4EBA"
+  descript: "\u4F1A\u98DE\u7684\u654C\u4EBA\uFF0C\u4ECE\u751F\u6210\u70B9\u76F4\u7EBF\u98DE\u5230\u57FA\u5730"
+  enemyType: 3
+  maxHealth: 100
+  moveSpeed: 3
+  damage: 10
+  enemyIcon: {fileID: 21300000, guid: 4f9e15fbf5db7a94db9c8ecb4e6ece15, type: 3}
+  deathEffect: {fileID: 0}
+  rewardExp: 20
+  rewardGold: 10
