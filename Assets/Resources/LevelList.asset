@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c0e8bbca6172e544aa546da58a433c2, type: 3}
+  m_Name: LevelList
+  m_EditorClassIdentifier: 
+  levels:
+  - levelName: 1
+    description: "\u7B2C\u4E00\u5173"
+    baseHealth: 200
+    initialGold: 200
+    availableTowers:
+    - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
+    - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
+    waves:
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 5
+        spawnInterval: 1
+      delayBeforeWave: 10
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 3
+        spawnInterval: 3
+      - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
+        count: 5
+        spawnInterval: 2
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 10
+        spawnInterval: 2
+      delayBeforeWave: 5
+  - levelName: 2
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 3
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 4
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 5
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 6
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 7
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 8
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 9
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []
+  - levelName: 10
+    description: 
+    baseHealth: 0
+    initialGold: 0
+    availableTowers: []
+    waves: []

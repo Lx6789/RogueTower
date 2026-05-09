@@ -9,7 +9,7 @@ public enum TowerType
     ContinuousAttack    // 连线持续攻击
 }
 
-[CreateAssetMenu(fileName = "New TowerData", menuName = "塔数据配置")]
+[CreateAssetMenu(fileName = "TowerData", menuName = "塔数据配置")]
 public class TowerData : ScriptableObject
 {
     [Header("基础信息")]
@@ -23,6 +23,8 @@ public class TowerData : ScriptableObject
     public TowerType type;
     [Tooltip("等级上限")]
     public int maxLevel;
+    [Tooltip("塔预制体")]
+    public GameObject towerPrefab;
 
     [Header("战斗属性")]
     [Tooltip("塔伤害")]

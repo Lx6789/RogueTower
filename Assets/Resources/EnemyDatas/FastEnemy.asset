@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyName: "\u8DD1\u5F97\u5FEB"
   descript: "\u8DD1\u7684\u5FEB\u7684\u654C\u4EBA"
   enemyType: 1
+  enemyPrefab: {fileID: 1891092138022944256, guid: dd7670e9055533f4ab01d3c35ec786a0, type: 3}
   maxHealth: 80
   moveSpeed: 6
   damage: 20

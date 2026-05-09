@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44d3db4384a4cc14ba5bd548088c0389, type: 3}
-  m_Name: NormalEemy
+  m_Name: FlyingEnemy
   m_EditorClassIdentifier: 
-  enemyName: "\u666E\u901A\u654C\u4EBA"
-  descript: "\u666E\u901A\u654C\u4EBA"
-  enemyType: 0
+  enemyName: "\u7A7A\u4E2D\u98DE\u4EBA"
+  descript: "\u4F1A\u98DE\u7684\u654C\u4EBA\uFF0C\u4ECE\u751F\u6210\u70B9\u76F4\u7EBF\u98DE\u5230\u57FA\u5730"
+  enemyType: 3
+  enemyPrefab: {fileID: 3791993280836493789, guid: 0ef9fcef3771bd04ea4573d11b855100, type: 3}
   maxHealth: 100
-  moveSpeed: 3.5
+  moveSpeed: 3
   damage: 10
-  enemyIcon: {fileID: -9095717837082945937, guid: 299d88909860ff346bf0e816f23385fa, type: 3}
+  enemyIcon: {fileID: 21300000, guid: 4f9e15fbf5db7a94db9c8ecb4e6ece15, type: 3}
   deathEffect: {fileID: 0}
-  rewardExp: 10
-  rewardGold: 100
+  rewardExp: 20
+  rewardGold: 10

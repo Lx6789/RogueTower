@@ -12,7 +12,7 @@ public enum EnemyType
     Boss            //老大
 }
 
-[CreateAssetMenu(fileName = "New EnemyData", menuName = "敌人数据配置")]
+[CreateAssetMenu(fileName = "EnemyData", menuName = "敌人数据配置")]
 public class EnemyData : ScriptableObject
 {
     [Header("基础信息")]
@@ -22,6 +22,8 @@ public class EnemyData : ScriptableObject
     [TextArea] public string descript;
     [Tooltip("敌人类型")]
     public EnemyType enemyType;
+    [Tooltip("敌人预制体")]
+    public GameObject enemyPrefab;
 
     [Header("战斗属性")]
     [Tooltip("最大生命值")]
