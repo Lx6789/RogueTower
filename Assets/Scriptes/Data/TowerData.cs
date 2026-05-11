@@ -39,8 +39,10 @@ public class TowerData : ScriptableObject
     public int cost;
 
     [Header("子弹相关")]
-    [Tooltip("子弹图片")]
-    public Sprite bulletIcon;
+    [Tooltip("子弹速度")]
+    public float bulletSpeed;
+    [Tooltip("子弹预制体")]
+    public GameObject bulletPrefab;
     [Tooltip("子弹攻击到敌人的粒子特效")]
     public GameObject BulletEffect;
 }

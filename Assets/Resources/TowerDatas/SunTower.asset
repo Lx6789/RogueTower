@@ -10,16 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b70e3ef68e25e14385214adec5504a3, type: 3}
-  m_Name: SolarTower
+  m_Name: SunTower
   m_EditorClassIdentifier: 
   towerName: "\u592A\u9633\u5854"
   descript: "\u91CA\u653E\u4E00\u6B21\u5706\u5F62\u7684\u51B2\u51FB\u6CE2\uFF0C\u5728\u51B2\u51FB\u6CE2\u8303\u56F4\u5185\u5BF9\u654C\u4EBA\u9020\u6210\u4F24\u5BB3"
   towerIcon: {fileID: 21300000, guid: 43bb10e5a54c41740be13ef79f551a74, type: 3}
   type: 1
-  maxLevel: 0
-  damage: 10
-  range: 5
-  attackInterval: 1
-  cost: 120
-  bulletIcon: {fileID: 21300000, guid: 002dfb238abcb7c41bfc8f37c464d550, type: 3}
+  maxLevel: 3
+  towerPrefab: {fileID: 3497150461636532867, guid: 14c66a85521b4474bbfd80509e62049c, type: 3}
+  damage: 20
+  range: 4
+  attackInterval: 2
+  cost: 150
+  bulletSpeed: 0
+  bulletPrefab: {fileID: 1331725903188996161, guid: 0fbf31bcab9de0e44bec2657611cb40e, type: 3}
   BulletEffect: {fileID: 0}

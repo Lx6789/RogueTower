@@ -17,9 +17,11 @@ MonoBehaviour:
   towerIcon: {fileID: 21300000, guid: 6feb53651253c7f4088634e8ef2adc91, type: 3}
   type: 2
   maxLevel: 0
+  towerPrefab: {fileID: 3853736426216929256, guid: 64b829711e41d9449bd883603158c27a, type: 3}
   damage: 20
   range: 4
   attackInterval: 1
   cost: 80
-  bulletIcon: {fileID: 21300000, guid: 58f6e391ae9759d4cb99b17c31c3dc5a, type: 3}
+  bulletSpeed: 0
+  bulletPrefab: {fileID: 0}
   BulletEffect: {fileID: 0}

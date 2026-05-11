@@ -22,7 +22,12 @@ public class GameManager : MonoBehaviour
     [Tooltip("基地位置")]
     public Transform baseTransform;
 
+    [Header("游戏状态")]
+    [SerializeField] private int currentLevelIndex = 0;  // 当前关卡索引
+
     public static GameManager Instance { get; private set; }
+
+    public int CurrentLevelIndex => currentLevelIndex;
 
     private void Awake()
     {
@@ -58,5 +63,26 @@ public class GameManager : MonoBehaviour
     public void onExitButton()
     {
         Debug.Log("退出游戏");
+    }
+
+    // 获取当前关卡配置
+    public LevelConfig GetCurrentLevelConfig()
+    {
+        if (LevelList == null || LevelList.levels == null ||
+            currentLevelIndex >= LevelList.levels.Length)
+        {
+            Debug.LogError("无法获取当前关卡配置！");
+            return null;
+        }
+        return LevelList.levels[currentLevelIndex];
+    }
+
+    // 设置当前关卡
+    public void SetCurrentLevel(int levelIndex)
+    {
+        if (LevelList != null && levelIndex < LevelList.levels.Length)
+        {
+            currentLevelIndex = levelIndex;
+        }
     }
 }

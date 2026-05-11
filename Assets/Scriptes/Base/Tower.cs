@@ -1,36 +1,134 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public abstract class Tower : MonoBehaviour
 {
-    [Header("»ù´¡ĞÅÏ¢")]
-    [Tooltip("ËşÃû³Æ£¬½öÓÃÓÚÊ¶±ğ")]
-    public string enemyName;
-    [Tooltip("ËşÃèÊö")]
-    [TextArea] public string descript;
-    [Tooltip("ËşÍ¼Æ¬")]
-    public Sprite towerIcon;
-    [Tooltip("ËşÀàĞÍ")]
-    public TowerType type;
-    [Tooltip("µÈ¼¶ÉÏÏŞ")]
-    public int maxLevel;
+    private TowerData configData;
 
-    [Header("Õ½¶·ÊôĞÔ")]
-    [Tooltip("ËşÉËº¦")]
-    [Min(10)]
-    public int damage;
-    [Tooltip("ËşÉËº¦·¶Î§")]
-    public float range;
-    [Tooltip("Ëş¹¥»÷¼ä¸ô")]
-    public float attackInterval;
-    [Tooltip("Ëş½¨Ôì½ğ¶î")]
-    [Min(0)]
-    public int cost;
+    [Header("å¡”å±æ€§ï¼ˆè¿è¡Œæ—¶ï¼‰")]
+    protected GameObject bulletPrefab;
+    protected float fireRate;
+    protected float range;
+    protected int damage;
+    protected float bulletSpeed;
+    protected GameObject hitEffect;
 
-    [Header("×Óµ¯Ïà¹Ø")]
-    [Tooltip("×Óµ¯Í¼Æ¬")]
-    public Sprite bulletIcon;
-    [Tooltip("×Óµ¯¹¥»÷µ½µĞÈËµÄÁ£×ÓÌØĞ§")]
-    public GameObject BulletEffect;
+    protected float fireTimer;
+    protected Transform currentTarget;
+
+    [Header("æ£€æµ‹è®¾ç½®")]
+    [SerializeField] private bool lockTarget = true;
+
+    [Header("å›¾å±‚è®¾ç½®")]                                        
+    [SerializeField] protected LayerMask obstacleLayer;
+    [SerializeField] protected LayerMask enemyLayer;
+
+    void Start()
+    {
+        if (enemyLayer == 0)
+        {
+            enemyLayer = LayerMask.GetMask("Enemy");
+        }
+        if (obstacleLayer == 0)
+        {
+            obstacleLayer = LayerMask.GetMask("Wall");
+        }
+        OnStart();
+    }
+
+    void Update()
+    {
+        FindTarget();
+        HandleShooting();
+        OnUpdate();
+    }
+
+    /// <summary>
+    /// åˆå§‹åŒ–å¡”
+    /// </summary>
+    public virtual void Init(TowerData data)
+    {
+        configData = data;
+        range = data.range;
+        fireRate = data.attackInterval;
+        bulletPrefab = data.bulletPrefab;
+        damage = data.damage;
+        hitEffect = data.BulletEffect;
+        bulletSpeed = data.bulletSpeed;
+    }
+
+    /// <summary>
+    /// å­ç±» Start
+    /// </summary>
+    protected virtual void OnStart() { }
+
+    /// <summary>
+    /// å­ç±» Update
+    /// </summary>
+    protected virtual void OnUpdate() { }
+
+    /// <summary>
+    /// å°„å‡»ï¼ˆå­ç±»å®ç°ï¼‰
+    /// </summary>
+    protected abstract void Shoot();
+
+    /// <summary>
+    /// å¯»æ‰¾ç›®æ ‡
+    /// </summary>
+    protected virtual void FindTarget()
+    {
+        if (lockTarget && currentTarget != null)
+        {
+            float distToTarget = Vector2.Distance(transform.position, currentTarget.position);
+            if (distToTarget <= range && currentTarget.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+        }
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, range, enemyLayer);
+        float closestDist = Mathf.Infinity;
+        Transform newTarget = null;
+
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.CompareTag("Enemy"))
+            {
+                float dist = Vector2.Distance(transform.position, hit.transform.position);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    newTarget = hit.transform;
+                }
+            }
+        }
+
+        currentTarget = newTarget;
+    }
+
+    /// <summary>
+    /// å¤„ç†å°„å‡»é€»è¾‘
+    /// </summary>
+    protected virtual void HandleShooting()
+    {
+        if (currentTarget == null) return;
+
+        if (!currentTarget.gameObject.activeInHierarchy)
+        {
+            currentTarget = null;
+            return;
+        }
+
+        fireTimer += Time.deltaTime;
+        if (fireTimer >= fireRate)
+        {
+            fireTimer = 0f;
+            Shoot();
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, range);
+    }
 }

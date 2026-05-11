@@ -17,7 +17,7 @@ MonoBehaviour:
   enemyType: 0
   enemyPrefab: {fileID: 682829312452744739, guid: 42c787652f25b0241b785d898bb0a1e1, type: 3}
   maxHealth: 100
-  moveSpeed: 3.5
+  moveSpeed: 2
   damage: 10
   enemyIcon: {fileID: -9095717837082945937, guid: 299d88909860ff346bf0e816f23385fa, type: 3}
   deathEffect: {fileID: 0}
