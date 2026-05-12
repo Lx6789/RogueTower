@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1511071072867978180}
   - component: {fileID: 3685010797115563524}
   - component: {fileID: 1449015726504361292}
-  - component: {fileID: 1843260704230321872}
+  - component: {fileID: 1172327796540343853}
   m_Layer: 0
   m_Name: SunTowerBullet
   m_TagString: Untagged
@@ -149,7 +149,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.128
---- !u!114 &1843260704230321872
+--- !u!114 &1172327796540343853
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,6 +158,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1331725903188996161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 917b7551d78dd3e43852dde3de4d1179, type: 3}
+  m_Script: {fileID: 11500000, guid: 71562ac1e0658c1468b14731bea46c07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

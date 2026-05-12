@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class BuildManager : MonoBehaviour
 {
-    [Header("ÍßÆ¬µØÍ¼")]
+    [Header("ç“¦ç‰‡åœ°å›¾")]
     [SerializeField] private Tilemap prefabTilemap;
 
-    [Header("Ñ¡Ôñ¿ò")]
+    [Header("é€‰æ‹©æ¡†")]
     [SerializeField] private GameObject selectionIndicator;
 
-    [Header("½¨ÔìÃæ°å")]
+    [Header("å»ºé€ é¢æ¿")]
     [SerializeField] private GameObject buildPanelPrefab;
     [SerializeField] private Vector2 panelOffset = new Vector2(0, 80);
 
@@ -22,7 +22,7 @@ public class BuildManager : MonoBehaviour
     private Vector3Int currentSelectedCell;
     private int currentTowerIndex = 0;
 
-    [Header("Ãæ°å³ß´çÉèÖÃ")]
+    [Header("é¢æ¿å°ºå¯¸è®¾ç½®")]
     [SerializeField] private float cardWidth = 80f;
     [SerializeField] private float cardHeight = 120f;
     [SerializeField] private float cardSpacing = 10f;
@@ -31,9 +31,7 @@ public class BuildManager : MonoBehaviour
     private void Start()
     {
         if (selectionIndicator != null)
-        {
             selectionIndicator.SetActive(false);
-        }
 
         HideGroundTilemapRender();
         CreateBuildPanel();
@@ -43,10 +41,10 @@ public class BuildManager : MonoBehaviour
     {
         HandleMouseClick();
         HandleTowerSwitch();
-        HandleBuildInput();  // ? Ìí¼Ó½¨ÔìÊäÈë´¦Àí
+        HandleBuildInput();
     }
 
-    // ==================== ³õÊ¼»¯ ====================
+    // ==================== åˆå§‹åŒ– ====================
 
     private void CreateBuildPanel()
     {
@@ -58,7 +56,6 @@ public class BuildManager : MonoBehaviour
                 currentBuildPanel = Instantiate(buildPanelPrefab, canvas.transform);
                 buildPanelUI = currentBuildPanel.GetComponent<BuildPanelUI>();
                 currentBuildPanel.SetActive(false);
-
                 InitializePanelWithTowers();
             }
         }
@@ -68,12 +65,11 @@ public class BuildManager : MonoBehaviour
     {
         TowerData[] availableTowers = GetAvailableTowers();
         if (availableTowers == null || availableTowers.Length == 0) return;
-
         buildPanelUI.CreateTowerCards(availableTowers);
         AdjustPanelSize();
     }
 
-    // ==================== Ãæ°å´óĞ¡ ====================
+    // ==================== é¢æ¿å¤§å° ====================
 
     public void AdjustPanelSize()
     {
@@ -83,18 +79,15 @@ public class BuildManager : MonoBehaviour
         if (availableTowers == null || availableTowers.Length == 0) return;
 
         int towerCount = availableTowers.Length;
-
         float panelWidth = (cardWidth * towerCount) + (cardSpacing * (towerCount - 1)) + (panelPadding * 2);
         float panelHeight = cardHeight + (panelPadding * 2);
 
         RectTransform panelRect = currentBuildPanel.GetComponent<RectTransform>();
         if (panelRect != null)
-        {
             panelRect.sizeDelta = new Vector2(panelWidth, panelHeight);
-        }
     }
 
-    // ==================== Êı¾İ»ñÈ¡ ====================
+    // ==================== æ•°æ®è·å– ====================
 
     private TowerData[] GetAvailableTowers()
     {
@@ -103,7 +96,7 @@ public class BuildManager : MonoBehaviour
         return currentLevel?.availableTowers;
     }
 
-    // ==================== µØÃæ´¦Àí ====================
+    // ==================== åœ°é¢å¤„ç† ====================
 
     private void HideGroundTilemapRender()
     {
@@ -112,32 +105,30 @@ public class BuildManager : MonoBehaviour
         if (renderer != null) renderer.enabled = false;
     }
 
-    // ==================== ÊäÈë´¦Àí ====================
+    // ==================== è¾“å…¥å¤„ç† ====================
 
     private void HandleMouseClick()
     {
-        // ¼ì²éÊó±êÊÇ·ñÔÚ UI ÉÏ£¬Èç¹ûÊÇÔò²»´¦ÀíÍßÆ¬µã»÷
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
             return;
-        }
 
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0;
 
+            // æ£€æŸ¥æ˜¯å¦ç‚¹å‡»åˆ°å¡”
+            Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+            if (hit != null && hit.GetComponent<Tower>() != null)
+                return;
+
             Vector3Int cellPosition = prefabTilemap.WorldToCell(mouseWorldPos);
             TileBase clickedTile = prefabTilemap.GetTile(cellPosition);
 
             if (clickedTile != null)
-            {
                 SelectCell(cellPosition);
-            }
             else
-            {
                 DeselectCell();
-            }
         }
     }
 
@@ -146,30 +137,20 @@ public class BuildManager : MonoBehaviour
         if (currentBuildPanel == null || !currentBuildPanel.activeSelf) return;
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
             PreviousTower();
-        }
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-        {
             NextTower();
-        }
     }
 
-    /// <summary>
-    /// ´¦Àí½¨ÔìÊäÈë£¨°´¿Õ¸ñ¼ü»òµã»÷¿¨Æ¬½¨Ôì£©
-    /// </summary>
     private void HandleBuildInput()
     {
         if (currentBuildPanel == null || !currentBuildPanel.activeSelf) return;
 
-        // °´¿Õ¸ñ¼ü»ò»Ø³µ¼ü½¨Ôì
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-        {
             BuildSelectedTower();
-        }
     }
 
-    // ==================== Ñ¡ÔñÂß¼­ ====================
+    // ==================== é€‰æ‹©é€»è¾‘ ====================
 
     private void SelectCell(Vector3Int cellPosition)
     {
@@ -184,20 +165,17 @@ public class BuildManager : MonoBehaviour
         HideBuildPanel();
     }
 
-    // ==================== Ñ¡Ôñ¿ò ====================
+    // ==================== é€‰æ‹©æ¡† ====================
 
     private void ShowSelectionIndicator(Vector3Int cellPosition)
     {
         Vector3 cellWorldPos = prefabTilemap.GetCellCenterWorld(cellPosition);
 
         if (currentIndicator == null)
-        {
             currentIndicator = Instantiate(selectionIndicator, cellWorldPos, Quaternion.identity);
-        }
         else
-        {
             currentIndicator.transform.position = cellWorldPos;
-        }
+
         currentIndicator.SetActive(true);
     }
 
@@ -206,7 +184,7 @@ public class BuildManager : MonoBehaviour
         if (currentIndicator != null) currentIndicator.SetActive(false);
     }
 
-    // ==================== ½¨ÔìÃæ°å ====================
+    // ==================== å»ºé€ é¢æ¿ ====================
 
     private void ShowBuildPanel(Vector3Int cellPosition)
     {
@@ -216,7 +194,6 @@ public class BuildManager : MonoBehaviour
         if (availableTowers == null || availableTowers.Length == 0) return;
 
         currentTowerIndex = 0;
-
         Vector3 cellWorldPos = prefabTilemap.GetCellCenterWorld(cellPosition);
         buildPanelUI.SetPosition(cellWorldPos, panelOffset);
         buildPanelUI.Show();
@@ -227,7 +204,12 @@ public class BuildManager : MonoBehaviour
         if (currentBuildPanel != null) currentBuildPanel.SetActive(false);
     }
 
-    // ==================== ËşÇĞ»» ====================
+    public bool IsPanelActive()
+    {
+        return currentBuildPanel != null && currentBuildPanel.activeSelf;
+    }
+
+    // ==================== å¡”åˆ‡æ¢ ====================
 
     private void PreviousTower()
     {
@@ -247,55 +229,40 @@ public class BuildManager : MonoBehaviour
         if (currentTowerIndex >= availableTowers.Length) currentTowerIndex = 0;
     }
 
-    // ==================== ½¨ÔìÂß¼­ ====================
+    // ==================== å»ºé€ é€»è¾‘ ====================
 
-    /// <summary>
-    /// ½¨Ôìµ±Ç°Ñ¡ÖĞµÄËş
-    /// </summary>
     public void BuildSelectedTower()
     {
         TowerData selectedTower = GetCurrentSelectedTower();
         if (selectedTower == null)
         {
-            Debug.LogError("Ã»ÓĞÑ¡ÖĞËş£¡");
+            Debug.LogError("æ²¡æœ‰é€‰ä¸­å¡”ï¼");
             return;
         }
 
         if (selectedTower.towerPrefab == null)
         {
-            Debug.LogError($"Ëş {selectedTower.towerName} Ã»ÓĞÉèÖÃÔ¤ÖÆÌå£¡");
+            Debug.LogError($"å¡” {selectedTower.towerName} æ²¡æœ‰è®¾ç½®é¢„åˆ¶ä½“ï¼");
             return;
         }
 
-        // »ñÈ¡ÍßÆ¬ÊÀ½ç×ø±ê
         Vector3 buildPosition = prefabTilemap.GetCellCenterWorld(currentSelectedCell);
-
-        // Éú³ÉËş
         BuildTower(selectedTower, buildPosition);
-
-        // ÒÆ³ıÍßÆ¬£¨¸ÃÎ»ÖÃ²»¿ÉÔÙ½¨Ôì£©
         prefabTilemap.SetTile(currentSelectedCell, null);
-
-        // Òş²ØÃæ°åºÍÑ¡Ôñ¿ò
         DeselectCell();
     }
 
-    /// <summary>
-    /// Éú³ÉËş
-    /// </summary>
     private void BuildTower(TowerData towerData, Vector3 position)
     {
         GameObject towerObj = Instantiate(towerData.towerPrefab, position, Quaternion.identity);
         Tower tower = towerObj.GetComponent<Tower>();
         if (tower != null)
         {
-            tower.Init(towerData);  // ËşµÄÀàĞÍÓÉÔ¤ÖÆÌåÉÏµÄ½Å±¾¾ö¶¨
+            tower.Init(towerData);
+            tower.Select();
         }
     }
 
-    /// <summary>
-    /// »ñÈ¡µ±Ç°Ñ¡ÖĞµÄËşÊı¾İ
-    /// </summary>
     public TowerData GetCurrentSelectedTower()
     {
         TowerData[] availableTowers = GetAvailableTowers();
@@ -304,9 +271,6 @@ public class BuildManager : MonoBehaviour
         return availableTowers[currentTowerIndex];
     }
 
-    /// <summary>
-    /// Í¨¹ıË÷Òı½¨ÔìËş£¨¹©¿¨Æ¬µã»÷µ÷ÓÃ£©
-    /// </summary>
     public void BuildTowerByIndex(int index)
     {
         TowerData[] availableTowers = GetAvailableTowers();

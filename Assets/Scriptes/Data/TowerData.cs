@@ -1,48 +1,51 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum TowerType
 {
-    FiredBullet,        // 发射子弹
-    AreaAttack,         // 范围攻击
-    ContinuousAttack    // 连线持续攻击
+    FiredBullet,
+    AreaAttack,
+    ContinuousAttack
 }
 
 [CreateAssetMenu(fileName = "TowerData", menuName = "塔数据配置")]
 public class TowerData : ScriptableObject
 {
     [Header("基础信息")]
-    [Tooltip("塔名称，仅用于识别")]
     public string towerName;
-    [Tooltip("塔描述")]
     [TextArea] public string descript;
-    [Tooltip("塔图片")]
     public Sprite towerIcon;
-    [Tooltip("塔类型")]
     public TowerType type;
-    [Tooltip("等级上限")]
     public int maxLevel;
-    [Tooltip("塔预制体")]
     public GameObject towerPrefab;
 
     [Header("战斗属性")]
-    [Tooltip("塔伤害")]
-    [Min(10)]
-    public int damage;
-    [Tooltip("塔伤害范围")]
-    public float range;
-    [Tooltip("塔攻击间隔")]
-    public float attackInterval;
-    [Tooltip("塔建造金额")]
-    [Min(0)]
-    public int cost;
+    [Tooltip("伤害（发射型/范围型：每次伤害；持续型：每秒伤害）")]
+    [Min(1)] public int damage = 10;
+
+    [Tooltip("攻击范围")]
+    public float range = 3f;
+
+    [Tooltip("攻击间隔（发射型/范围型：两次攻击间隔；持续型：不使用）")]
+    public float attackInterval = 1.5f;
+
+    [Tooltip("建造金额")]
+    [Min(0)] public int cost = 100;
+
+    [Header("范围攻击专用")]
+    [Tooltip("子弹扩张时间（秒）")]
+    public float expandDuration = 1f;
+
+    [Header("持续攻击专用")]
+    [Tooltip("伤害间隔（秒）")]
+    public float tickInterval = 0.3f;
 
     [Header("子弹相关")]
-    [Tooltip("子弹速度")]
-    public float bulletSpeed;
+    [Tooltip("子弹飞行速度（发射型用）")]
+    public float bulletSpeed = 10f;
+
     [Tooltip("子弹预制体")]
     public GameObject bulletPrefab;
-    [Tooltip("子弹攻击到敌人的粒子特效")]
+
+    [Tooltip("击中特效")]
     public GameObject BulletEffect;
 }

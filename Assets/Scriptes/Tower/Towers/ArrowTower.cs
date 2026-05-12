@@ -1,21 +1,35 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class ArrowTower : FiredBulletTower
 {
-    [Header("¼ýËþ×¨ÊôÐ§¹û")]
-    [SerializeField] private float knockbackForce = 3f;  // »÷ÍËÁ¦¶È
-    [SerializeField] private float knockbackDuration = 0.2f;  // »÷ÍË³ÖÐøÊ±¼ä
+    [Header("ç®­å¡”ç‰¹æ€§")]
+    [SerializeField] private float rotationSpeed = 10f;
 
-    protected override void InitBullet(Bullet bullet)
+    private Quaternion targetRotation;
+    private bool hasTarget = false;
+
+    protected override void OnStart()
     {
-        // µ÷ÓÃ»ùÀà³õÊ¼»¯
-        base.InitBullet(bullet);
+        targetRotation = transform.rotation;
+    }
 
-        // Èç¹û×Óµ¯ÊÇ ArrowBullet£¬ÉèÖÃ»÷ÍËÐ§¹û
-        ArrowBullet arrowBullet = bullet as ArrowBullet;
-        if (arrowBullet != null)
+    protected override void OnUpdate()
+    {
+        if (currentTarget != null)
         {
-            arrowBullet.SetKnockback(knockbackForce, knockbackDuration);
+            Vector2 direction = currentTarget.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            targetRotation = Quaternion.Euler(0, 0, angle);
+            hasTarget = true;
+        }
+        else
+        {
+            hasTarget = false;
+        }
+
+        if (hasTarget)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
     }
 }

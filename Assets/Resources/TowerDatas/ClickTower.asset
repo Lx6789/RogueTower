@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: ClickTower
   m_EditorClassIdentifier: 
   towerName: "\u70B9\u51FB\u5854"
-  descript: "\u653E\u7535\u6301\u7EED\u653B\u51FB\u654C\u4EBA"
+  descript: "\u91CA\u653E\u95EA\u7535\u94FE\uFF0C\u6301\u7EED\u7535\u51FB\u654C\u4EBA"
   towerIcon: {fileID: 21300000, guid: 6feb53651253c7f4088634e8ef2adc91, type: 3}
   type: 2
-  maxLevel: 0
+  maxLevel: 3
   towerPrefab: {fileID: 3853736426216929256, guid: 64b829711e41d9449bd883603158c27a, type: 3}
-  damage: 20
-  range: 4
-  attackInterval: 1
-  cost: 80
+  damage: 30
+  range: 3.5
+  attackInterval: 0
+  cost: 150
+  expandDuration: 1
+  tickInterval: 0.3
   bulletSpeed: 0
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 970674147117103453, guid: 4f35bb140057f8348b12a183d94cb978, type: 3}
   BulletEffect: {fileID: 0}

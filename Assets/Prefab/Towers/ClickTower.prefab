@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 315568568915267687}
   - component: {fileID: 7541407236178875622}
+  - component: {fileID: -6233605555509226298}
   m_Layer: 0
   m_Name: ClickTower
   m_TagString: Untagged
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 15
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: 6feb53651253c7f4088634e8ef2adc91, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -84,3 +85,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-6233605555509226298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3853736426216929256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0b871420ca7ab947bcd14262dcb712e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockTarget: 1
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  rangeIndicatorPrefab: {fileID: 7930340059728870945, guid: f4b4d7d1b4b56bb43ba9661d8be5c767, type: 3}
+  rangeColor: {r: 1, g: 1, b: 1, a: 0.2}
+  beamColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+  beamWidth: 0.15
+  chainRange: 2
+  maxChainTargets: 2
+  chainDamageMultiplier: 0.5

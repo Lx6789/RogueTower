@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8457334048203286629}
   - component: {fileID: 1069849268453548110}
   - component: {fileID: 1086409043933672510}
+  - component: {fileID: 435749660356582733}
   m_Layer: 0
   m_Name: ClickTowerBullet
   m_TagString: Untagged
@@ -75,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 15
-  m_Sprite: {fileID: 21300000, guid: 58f6e391ae9759d4cb99b17c31c3dc5a, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -2413806693520163455, guid: 92eff3254e6d6674ca9e7a6d60144e23, type: 3}
+  m_Color: {r: 0.7236614, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -148,3 +149,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &435749660356582733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970674147117103453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc97d282e61b3b4469a9c16e9b5a2863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beamColor: {r: 0.3, g: 0.5, b: 1, a: 1}
+  beamWidth: 0.15
+  chainRange: 2
+  maxChainTargets: 2
+  chainDamageMultiplier: 0.5
