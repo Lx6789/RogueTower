@@ -94,6 +94,7 @@ public abstract class Enemy : MonoBehaviour
     private void Die()
     {
         WaveManager.Instance.OnEnemyDied();
+        GameManager.Instance.updateScord(configData.rewardExp);
         Destroy(gameObject);
     }
 

@@ -18,6 +18,8 @@ public abstract class Tower : MonoBehaviour
     protected float fireTimer;
     protected Transform currentTarget;
     private bool isFirstShot = true;
+    public int level = 1;
+    private int maxLevel;
 
     [Header("检测设置")]
     [SerializeField] private bool lockTarget = true;
@@ -37,6 +39,8 @@ public abstract class Tower : MonoBehaviour
 
     private LineRenderer rangeLine;
     private static Tower currentlySelectedTower;   // 静态选中管理
+    public int currentUpgradeCost;
+    public int currentSaleCost;
 
     protected virtual void Start()
     {
@@ -99,6 +103,9 @@ public abstract class Tower : MonoBehaviour
         bulletSpeed = data.bulletSpeed;
         expandDuration = data.expandDuration;
         tickInterval = data.tickInterval;
+        maxLevel = data.maxLevel;
+        currentSaleCost = data.cost - level * 5;
+        currentUpgradeCost = data.cost + level * 10;
     }
 
     protected virtual void OnStart() { }
@@ -174,17 +181,25 @@ public abstract class Tower : MonoBehaviour
             currentlySelectedTower.Deselect();
 
         currentlySelectedTower = this;
+        GameManager.Instance.openTowerPanel(transform.position ,gameObject);
         ShowRangeIndicator();
     }
 
+    /// <summary>
+    /// 关闭显示范围
+    /// </summary>
     public void Deselect()
     {
         if (currentlySelectedTower == this)
             currentlySelectedTower = null;
 
+        GameManager.Instance.closeTowerPanel();
         HideRangeIndicator();
     }
 
+    /// <summary>
+    /// 显示范围
+    /// </summary>
     private void ShowRangeIndicator()
     {
         if (rangeLine == null)
@@ -261,5 +276,29 @@ public abstract class Tower : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, range);
+    }
+
+    /// <summary>
+    /// 升级
+    /// </summary>
+    public void Upgrade()
+    {
+        if (level >= maxLevel || GameManager.Instance.currentGold < currentUpgradeCost) return;
+        level++;
+        damage += 10;
+        range += 0.5f;
+        tickInterval -= 0.5f;
+        currentUpgradeCost += level * 10;
+        currentSaleCost = currentUpgradeCost - level * 5;
+        GameManager.Instance.updateGold(-currentUpgradeCost);
+    }
+
+    /// <summary>
+    /// 售卖塔
+    /// </summary>
+    public void Sale()
+    {
+        GameManager.Instance.updateGold(currentSaleCost);
+        Destroy(gameObject);
     }
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
   maxLevel: 3
   towerPrefab: {fileID: 3853736426216929256, guid: 64b829711e41d9449bd883603158c27a, type: 3}
   damage: 30
-  range: 3.5
+  range: 1
   attackInterval: 0
   cost: 150
   expandDuration: 1

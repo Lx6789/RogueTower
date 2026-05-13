@@ -252,9 +252,18 @@ public class BuildManager : MonoBehaviour
         DeselectCell();
     }
 
+    /// <summary>
+    /// 生成塔
+    /// </summary>
+    /// <param name="towerData"></param>
+    /// <param name="position"></param>
     private void BuildTower(TowerData towerData, Vector3 position)
     {
+        int currentGold = GameManager.Instance.currentGold;
+        int towerCost = towerData.cost;
+        if (currentGold - towerCost < 0) return;
         GameObject towerObj = Instantiate(towerData.towerPrefab, position, Quaternion.identity);
+        GameManager.Instance.updateGold(-towerCost);
         Tower tower = towerObj.GetComponent<Tower>();
         if (tower != null)
         {
