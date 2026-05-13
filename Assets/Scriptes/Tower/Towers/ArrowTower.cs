@@ -4,6 +4,7 @@ public class ArrowTower : FiredBulletTower
 {
     [Header("箭塔特性")]
     [SerializeField] private float rotationSpeed = 10f;
+    [SerializeField] private bool smoothRotation = true;  // 可选：是否平滑旋转
 
     private Quaternion targetRotation;
     private bool hasTarget = false;
@@ -14,6 +15,12 @@ public class ArrowTower : FiredBulletTower
     }
 
     protected override void OnUpdate()
+    {
+        UpdateTargetRotation();
+        ApplyRotation();
+    }
+
+    private void UpdateTargetRotation()
     {
         if (currentTarget != null)
         {
@@ -26,10 +33,19 @@ public class ArrowTower : FiredBulletTower
         {
             hasTarget = false;
         }
+    }
 
-        if (hasTarget)
+    private void ApplyRotation()
+    {
+        if (!hasTarget) return;
+
+        if (smoothRotation)
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.rotation = targetRotation;
         }
     }
 }

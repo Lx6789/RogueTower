@@ -31,7 +31,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 15
-  m_Sprite: {fileID: -2413806693520163455, guid: 92eff3254e6d6674ca9e7a6d60144e23, type: 3}
-  m_Color: {r: 0.7236614, g: 0, b: 1, a: 1}
+  m_Sprite: {fileID: 7482667652216324306, guid: f9a0859e9a064494f9d35c137536ec68, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -161,8 +161,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc97d282e61b3b4469a9c16e9b5a2863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beamColor: {r: 0.3, g: 0.5, b: 1, a: 1}
-  beamWidth: 0.15
-  chainRange: 2
-  maxChainTargets: 2
-  chainDamageMultiplier: 0.5

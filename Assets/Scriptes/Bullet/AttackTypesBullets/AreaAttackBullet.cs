@@ -7,23 +7,12 @@ public abstract class AreaAttackBullet : Bullet
     protected float expandDuration;
 
     private float timer;
-    private float spriteSize;
     private HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
     public void SetAreaParams(float maxRadius, float expandDuration)
     {
         this.maxRadius = maxRadius;
         this.expandDuration = expandDuration;
-
-        // ✅ 自适应图片大小
-        if (spriteRenderer != null && spriteRenderer.sprite != null)
-        {
-            spriteSize = spriteRenderer.sprite.bounds.size.x;
-        }
-        else
-        {
-            spriteSize = 1f;
-        }
 
         transform.localScale = Vector3.zero;
         timer = 0f;
@@ -37,8 +26,9 @@ public abstract class AreaAttackBullet : Bullet
         timer += Time.deltaTime;
         float progress = timer / expandDuration;
         float currentRadius = Mathf.Lerp(0, maxRadius, progress);
-        float targetScale = (currentRadius * 2) / spriteSize;
-        transform.localScale = new Vector3(targetScale, targetScale, 1);
+
+        // 使用统一的缩放计算方法
+        UpdateScaleFromRadius(currentRadius);
 
         CheckExpandingHit(currentRadius);
 
@@ -47,6 +37,18 @@ public abstract class AreaAttackBullet : Bullet
             DealFinalDamage();
             Destroy(gameObject);
         }
+    }
+
+    /// <summary>
+    /// 根据半径更新 Sprite 缩放（与塔基类方法逻辑一致）
+    /// </summary>
+    protected virtual void UpdateScaleFromRadius(float radius)
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null) return;
+
+        float spriteSize = spriteRenderer.sprite.bounds.size.x;
+        float targetScale = (radius * 2) / spriteSize;
+        transform.localScale = new Vector3(targetScale, targetScale, 1);
     }
 
     private void CheckExpandingHit(float currentRadius)

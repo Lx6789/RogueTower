@@ -2,13 +2,10 @@
 
 public abstract class FiredBulletTower : Tower
 {
-    [Header("射击点")]
-    [SerializeField] protected Transform shootPoint;
-
     protected override void OnStart()
     {
         if (shootPoint == null) shootPoint = transform;
-        if (obstacleLayer == 0) obstacleLayer = LayerMask.GetMask("Wall");
+        if (obstacleLayer == 0) obstacleLayer = LayerMask.GetMask("ObstacleLayer");
     }
 
     protected override void Shoot()

@@ -26,19 +26,24 @@ public abstract class Tower : MonoBehaviour
     [SerializeField] protected LayerMask obstacleLayer;
     [SerializeField] protected LayerMask enemyLayer;
 
+    [Header("射击点（未赋值则使用塔自身位置）")]
+    [SerializeField] protected Transform shootPoint;
+
     [Header("范围指示器")]
-    [SerializeField] protected GameObject rangeIndicatorPrefab;
-    [SerializeField] protected Color rangeColor = new Color(1f, 1f, 1f, 0.2f);
+    [SerializeField] protected Color rangeColor = new Color(1f, 1f, 1f, 0.25f); // 白色半透明
+    [SerializeField] private float rangeLineWidth = 0.1f;
+    [SerializeField] private int rangeLineSortingOrder = 5;
+    [SerializeField] private int rangeSegments = 64;
 
-    protected GameObject currentRangeIndicator;
-    private bool isSelected = false;
+    private LineRenderer rangeLine;
+    private static Tower currentlySelectedTower;   // 静态选中管理
 
-    void Start()
+    protected virtual void Start()
     {
         if (enemyLayer == 0)
             enemyLayer = LayerMask.GetMask("Enemy");
         if (obstacleLayer == 0)
-            obstacleLayer = LayerMask.GetMask("Wall");
+            obstacleLayer = LayerMask.GetMask("ObstacleLayer");
 
         towerCollider = GetComponent<Collider2D>();
         if (towerCollider == null)
@@ -49,14 +54,38 @@ public abstract class Tower : MonoBehaviour
         }
         towerCollider.isTrigger = false;
 
+        if (shootPoint == null)
+            shootPoint = transform;
+
         OnStart();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         FindTarget();
         HandleShooting();
         OnUpdate();
+
+        // 只有当前被选中的塔才检测点击取消
+        if (currentlySelectedTower == this)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                // 忽略 UI 点击
+                if (UnityEngine.EventSystems.EventSystem.current != null &&
+                    UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                    return;
+
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Collider2D hit = Physics2D.OverlapPoint(mousePos);
+
+                // 如果点击的不是任何 Tower，就取消选中
+                if (hit == null || hit.GetComponent<Tower>() == null)
+                {
+                    Deselect();
+                }
+            }
+        }
     }
 
     public virtual void Init(TowerData data)
@@ -136,69 +165,96 @@ public abstract class Tower : MonoBehaviour
         }
     }
 
-    // ==================== 范围指示器 ====================
+    // ==================== 范围指示器（LineRenderer 自动绘制） ====================
 
     public void Select()
     {
-        isSelected = true;
+        // 取消之前选中的塔
+        if (currentlySelectedTower != null && currentlySelectedTower != this)
+            currentlySelectedTower.Deselect();
+
+        currentlySelectedTower = this;
         ShowRangeIndicator();
     }
 
     public void Deselect()
     {
-        isSelected = false;
+        if (currentlySelectedTower == this)
+            currentlySelectedTower = null;
+
         HideRangeIndicator();
     }
 
     private void ShowRangeIndicator()
     {
-        if (rangeIndicatorPrefab == null) return;
-
-        if (currentRangeIndicator == null)
+        if (rangeLine == null)
         {
-            currentRangeIndicator = Instantiate(rangeIndicatorPrefab, transform.position, Quaternion.identity, transform);
-            SpriteRenderer sr = currentRangeIndicator.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                sr.color = rangeColor;
-                UpdateRangeIndicatorSize();
-            }
+            GameObject lineObj = new GameObject("RangeIndicator");
+            lineObj.transform.SetParent(transform);
+            lineObj.transform.localPosition = Vector3.zero;
+
+            rangeLine = lineObj.AddComponent<LineRenderer>();
+            rangeLine.useWorldSpace = false;
+            rangeLine.loop = true;
+            rangeLine.startWidth = rangeLineWidth;
+            rangeLine.endWidth = rangeLineWidth;
+            rangeLine.material = new Material(Shader.Find("Sprites/Default"));
+            rangeLine.startColor = rangeColor;
+            rangeLine.endColor = rangeColor;
+            rangeLine.sortingOrder = rangeLineSortingOrder;
         }
-        currentRangeIndicator.SetActive(true);
+
+        UpdateRangeIndicatorSize();
+        rangeLine.enabled = true;
     }
 
     private void HideRangeIndicator()
     {
-        if (currentRangeIndicator != null)
-            currentRangeIndicator.SetActive(false);
+        if (rangeLine != null)
+            rangeLine.enabled = false;
     }
 
-    private void UpdateRangeIndicatorSize()
+    protected virtual void UpdateRangeIndicatorSize()
     {
-        if (currentRangeIndicator == null) return;
+        if (rangeLine == null) return;
 
-        SpriteRenderer sr = currentRangeIndicator.GetComponent<SpriteRenderer>();
-        if (sr != null && sr.sprite != null)
+        rangeLine.positionCount = rangeSegments + 1;
+        float angleStep = 360f / rangeSegments;
+
+        for (int i = 0; i <= rangeSegments; i++)
         {
-            float spriteSize = sr.sprite.bounds.size.x;
-            float targetScale = (range * 2) / spriteSize;
-            currentRangeIndicator.transform.localScale = new Vector3(targetScale, targetScale, 1);
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            Vector3 point = new Vector3(Mathf.Cos(angle) * range, Mathf.Sin(angle) * range, 0);
+            rangeLine.SetPosition(i, point);
         }
     }
 
+    /// <summary>
+    /// 根据半径计算缩放比例（供子弹使用）
+    /// </summary>
+    protected float CalculateScaleFromRadius(float radius, SpriteRenderer spriteRenderer)
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null) return 1f;
+        float spriteSize = spriteRenderer.sprite.bounds.size.x;
+        return (radius * 2) / spriteSize;
+    }
+
+    // 点击塔自身时选中
     private void OnMouseDown()
     {
         if (UnityEngine.EventSystems.EventSystem.current != null &&
             UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             return;
 
-        TowerSelector.Instance?.SelectTower(this);
+        Select();
     }
 
     private void OnDestroy()
     {
-        if (currentRangeIndicator != null)
-            Destroy(currentRangeIndicator);
+        if (rangeLine != null)
+            Destroy(rangeLine.gameObject);
+        if (currentlySelectedTower == this)
+            currentlySelectedTower = null;
     }
 
     private void OnDrawGizmosSelected()

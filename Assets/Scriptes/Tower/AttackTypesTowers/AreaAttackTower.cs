@@ -6,7 +6,7 @@ public abstract class AreaAttackTower : Tower
     {
         if (currentTarget == null || bulletPrefab == null) return;
 
-        GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        GameObject bulletObj = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
         AreaAttackBullet bullet = bulletObj.GetComponent<AreaAttackBullet>();
         if (bullet != null)
             InitBullet(bullet);

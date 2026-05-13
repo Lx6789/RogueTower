@@ -104,8 +104,11 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  rangeIndicatorPrefab: {fileID: 7930340059728870945, guid: f4b4d7d1b4b56bb43ba9661d8be5c767, type: 3}
+  shootPoint: {fileID: 0}
   rangeColor: {r: 1, g: 1, b: 1, a: 0.2}
+  rangeLineWidth: 0.1
+  rangeLineSortingOrder: 5
+  rangeSegments: 64
   beamColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   beamWidth: 0.15
   chainRange: 2
