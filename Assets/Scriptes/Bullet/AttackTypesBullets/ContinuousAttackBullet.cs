@@ -54,6 +54,8 @@ public abstract class ContinuousAttackBullet : Bullet
 
     protected virtual void Update()
     {
+        if (GameManager.IsPaused) return;
+
         if (target == null || !target.gameObject.activeInHierarchy)
         {
             Destroy(gameObject);

@@ -248,28 +248,39 @@ public class BuildManager : MonoBehaviour
 
         Vector3 buildPosition = prefabTilemap.GetCellCenterWorld(currentSelectedCell);
         BuildTower(selectedTower, buildPosition);
-        prefabTilemap.SetTile(currentSelectedCell, null);
         DeselectCell();
     }
 
     /// <summary>
-    /// 生成塔
+    /// 生成塔（方案二修改：传递瓦片恢复信息给塔）
     /// </summary>
-    /// <param name="towerData"></param>
-    /// <param name="position"></param>
     private void BuildTower(TowerData towerData, Vector3 position)
     {
         int currentGold = GameManager.Instance.currentGold;
         int towerCost = towerData.cost;
         if (currentGold - towerCost < 0) return;
+
+        // 1. 先获取当前格子的原始瓦片
+        TileBase originalTile = prefabTilemap.GetTile(currentSelectedCell);
+
+        // 2. 实例化塔
         GameObject towerObj = Instantiate(towerData.towerPrefab, position, Quaternion.identity);
         GameManager.Instance.updateGold(-towerCost);
+
         Tower tower = towerObj.GetComponent<Tower>();
         if (tower != null)
         {
+            // 3. 向塔传递恢复瓦片所需的信息
+            tower.belongingTilemap = prefabTilemap;
+            tower.cellPosition = currentSelectedCell;
+            tower.originalTile = originalTile;
+
             tower.Init(towerData);
             tower.Select();
         }
+
+        // 4. 移除瓦片（防止重复建造）
+        prefabTilemap.SetTile(currentSelectedCell, null);
     }
 
     public TowerData GetCurrentSelectedTower()

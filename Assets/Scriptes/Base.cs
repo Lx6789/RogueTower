@@ -8,6 +8,8 @@ public class Base : MonoBehaviour
     private int currenBaseHealth;
     private int currentLevelIndex = 0;
 
+    public int CurrentHealth => currenBaseHealth;
+
     private void Start()
     {
         maxBaseHealth = GameManager.Instance.LevelList.levels[currentLevelIndex].baseHealth;
@@ -22,7 +24,7 @@ public class Base : MonoBehaviour
 
             if (currenBaseHealth <= 0)
             {
-                Debug.Log("ÓÎÏ·½áÊø");
+                GameManager.Instance.GameOver(currenBaseHealth);
             } 
         }
     }

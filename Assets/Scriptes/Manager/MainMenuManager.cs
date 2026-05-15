@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuUI : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
 
-    public static MainMenuUI Instance { get; private set; }
+    public static MainMenuManager Instance { get; private set; }
 
     /// <summary>
     /// 按下开始按钮

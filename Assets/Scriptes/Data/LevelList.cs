@@ -30,13 +30,16 @@ public class LevelConfig
     public class WaveData
     {
         public EnemySpawnEntry[] enemies;
+        [Header("生成怪物前的时间")]
         public float delayBeforeWave = 3f;
 
         [System.Serializable]
         public class EnemySpawnEntry
         {
             public EnemyData enemyData;
+            [Header("怪物数量")]
             public int count;
+            [Header("生成怪物的间隔")]
             public float spawnInterval;
         }
     }

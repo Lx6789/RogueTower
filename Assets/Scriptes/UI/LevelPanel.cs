@@ -18,6 +18,7 @@ public class LevelPanel : MonoBehaviour
     private void generatCard()
     {
         int levelCount = GameManager.Instance.LevelList.levels.Length;
+        LevelUserData[] levelUserData = GameManager.Instance.UserData.levelUserDatas;
 
         Transform parent = transform.GetChild(0);
 
@@ -33,6 +34,8 @@ public class LevelPanel : MonoBehaviour
         {
             GameObject newCard = Instantiate(cardPrefab, parent);
             newCard.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (i + 1).ToString();
+            newCard.GetComponent<LevelCard>().setLevelIndex(i);
+            newCard.GetComponent<LevelCard>().setLevelLock(levelUserData[i].isUnlock);
         }
     }
 }

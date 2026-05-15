@@ -12,6 +12,10 @@ public class TowerPanel : MonoBehaviour
 
     private GameObject Tower;
 
+    /// <summary>
+    /// ³õÊ¼»¯ËþÃæ°å
+    /// </summary>
+    /// <param name="tower"></param>
     public void initTowerPanel(GameObject tower)
     {
         Tower towerComp = tower?.GetComponent<Tower>();
@@ -43,5 +47,11 @@ public class TowerPanel : MonoBehaviour
     {
         if (Tower == null) return;
         Tower.GetComponent<Tower>()?.Sale();
+    }
+
+    public void updatePanel(int level, int currentUpgradeCost, int currentSaleCost)
+    {
+        upgradeText.text = $"{level}\nUpgrade\n{currentUpgradeCost}";
+        saleText.text = $"Sale\n{currentSaleCost}";
     }
 }

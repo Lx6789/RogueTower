@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class WaveManager : MonoBehaviour
 {
@@ -12,9 +11,8 @@ public class WaveManager : MonoBehaviour
     [Header("怪物出生点")]
     public Transform spawnPoint;
 
-    private int currentLevelIndex = 0;  // 当前关卡索引
-    private int currentWaveIndex = 0;   // 当前波次索引
-    private int enemiesAlive = 0;       // 存活的敌人数量
+    private int currentWaveIndex = 0;
+    private int enemiesAlive = 0;
 
     private void Awake()
     {
@@ -23,14 +21,18 @@ public class WaveManager : MonoBehaviour
 
     void Start()
     {
+        // 确保GameManager已初始化
+        if (GameManager.Instance == null || GameManager.Instance.LevelList == null)
+        {
+            Debug.LogError("GameManager 或 LevelList 未正确初始化");
+            return;
+        }
+
         levelList = GameManager.Instance.LevelList;
-        // 开始第一关的所有波次
-        StartCoroutine(ProcessLevel(currentLevelIndex));
+        int levelIndex = GameManager.Instance.CurrentLevelIndex;
+        StartCoroutine(ProcessLevel(levelIndex));
     }
 
-    /// <summary>
-    /// 处理整个关卡的所有波次
-    /// </summary>
     IEnumerator ProcessLevel(int levelIndex)
     {
         if (levelList == null || levelIndex >= levelList.levels.Length)
@@ -42,42 +44,44 @@ public class WaveManager : MonoBehaviour
         LevelConfig currentLevel = levelList.levels[levelIndex];
         Debug.Log($"开始关卡: {currentLevel.levelName}");
 
-        // 遍历所有波次
         for (int waveIndex = 0; waveIndex < currentLevel.waves.Length; waveIndex++)
         {
-            Debug.Log($"准备第 {waveIndex + 1} 波");
+            if (GameManager.Instance.IsGameOver)
+                yield break;
 
-            // 生成当前波次的所有敌人
+            Debug.Log($"准备第 {waveIndex + 1} 波");
             yield return StartCoroutine(SpawnWave(currentLevel.waves[waveIndex]));
 
-            // 等待所有敌人被消灭
-            yield return new WaitUntil(() => enemiesAlive <= 0);
+            yield return new WaitUntil(() => enemiesAlive <= 0 || GameManager.Instance.IsGameOver);
+
+            if (GameManager.Instance.IsGameOver)
+                yield break;
 
             Debug.Log($"第 {waveIndex + 1} 波完成！");
 
-            // 波次之间的额外等待时间（可选）
             if (waveIndex < currentLevel.waves.Length - 1)
             {
-                yield return new WaitForSeconds(5f); // 5秒准备时间
+                yield return new WaitForSeconds(5f);
             }
         }
 
-        Debug.Log($"关卡 {currentLevel.levelName} 完成！");
-        // 这里可以触发关卡胜利逻辑
+        if (!GameManager.Instance.IsGameOver)
+        {
+            Base baseComp = GameManager.Instance.baseTransform?.GetComponent<Base>();
+            int baseHealth = baseComp != null ? baseComp.CurrentHealth : 1;
+            GameManager.Instance.GameOver(baseHealth);
+        }
     }
 
-    /// <summary>
-    /// 生成一波敌人
-    /// </summary>
     IEnumerator SpawnWave(LevelConfig.WaveData wave)
     {
-        // 波次开始前的准备时间
         yield return new WaitForSeconds(wave.delayBeforeWave);
 
-        // 创建生成列表
+        if (GameManager.Instance.IsGameOver)
+            yield break;
+
         List<EnemyData> spawnList = new List<EnemyData>();
 
-        // 将所有要生成的怪物加入列表
         foreach (var entry in wave.enemies)
         {
             for (int i = 0; i < entry.count; i++)
@@ -86,7 +90,6 @@ public class WaveManager : MonoBehaviour
             }
         }
 
-        // 随机打乱顺序
         for (int i = 0; i < spawnList.Count; i++)
         {
             int randomIndex = Random.Range(i, spawnList.Count);
@@ -95,17 +98,16 @@ public class WaveManager : MonoBehaviour
             spawnList[randomIndex] = temp;
         }
 
-        // 按随机顺序生成
         foreach (var enemyData in spawnList)
         {
+            if (GameManager.Instance.IsGameOver)
+                yield break;
+
             SpawnEnemy(enemyData);
             yield return new WaitForSeconds(wave.enemies[0].spawnInterval);
         }
     }
 
-    /// <summary>
-    /// 生成单个敌人
-    /// </summary>
     private void SpawnEnemy(EnemyData enemyData)
     {
         if (enemyData.enemyPrefab == null)
@@ -121,11 +123,10 @@ public class WaveManager : MonoBehaviour
         );
 
         Enemy enemy = enemyObj.GetComponent<Enemy>();
-
         if (enemy != null)
         {
             enemy.Init(enemyData);
-            enemiesAlive++;  // 增加存活敌人计数
+            enemiesAlive++;
         }
         else
         {
@@ -133,12 +134,9 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 敌人死亡时调用（由 Enemy 类调用）
-    /// </summary>
     public void OnEnemyDied()
     {
         enemiesAlive--;
-        if (enemiesAlive < 0) enemiesAlive = 0; // 防止负数
+        if (enemiesAlive < 0) enemiesAlive = 0;
     }
 }

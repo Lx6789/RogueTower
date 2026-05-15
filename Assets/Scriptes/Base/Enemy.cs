@@ -41,6 +41,7 @@ public abstract class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.IsPaused) return;
         DetectWalls();
     }
 
@@ -95,6 +96,7 @@ public abstract class Enemy : MonoBehaviour
     {
         WaveManager.Instance.OnEnemyDied();
         GameManager.Instance.updateScord(configData.rewardExp);
+        GameManager.Instance.updateGold(configData.rewardGold);
         Destroy(gameObject);
     }
 

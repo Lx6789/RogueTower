@@ -21,6 +21,8 @@ public abstract class AreaAttackBullet : Bullet
 
     protected virtual void Update()
     {
+        if (GameManager.IsPaused) return;
+
         if (expandDuration <= 0) return;
 
         timer += Time.deltaTime;

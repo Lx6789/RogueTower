@@ -11,6 +11,8 @@ public abstract class FiredBullet : Bullet
 
     protected virtual void Update()
     {
+        if (GameManager.IsPaused) return;
+
         MoveTowardsTarget();
     }
 

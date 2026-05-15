@@ -2,7 +2,7 @@
 - Project name: RogueTower
 - Unity version: Unity 2022.3.62f2c1
 - Active game object:
-  - Name: TowerPanel
+  - Name: GameManager
   - Tag: Untagged
-  - Layer: UI
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

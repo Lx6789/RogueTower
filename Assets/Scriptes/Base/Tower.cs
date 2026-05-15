@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;  // 引入 Tilemap 命名空间
 
 public abstract class Tower : MonoBehaviour
 {
@@ -32,15 +33,19 @@ public abstract class Tower : MonoBehaviour
     [SerializeField] protected Transform shootPoint;
 
     [Header("范围指示器")]
-    [SerializeField] protected Color rangeColor = new Color(1f, 1f, 1f, 0.25f); // 白色半透明
+    [SerializeField] protected Color rangeColor = new Color(1f, 1f, 1f, 0.25f);
     [SerializeField] private float rangeLineWidth = 0.1f;
     [SerializeField] private int rangeLineSortingOrder = 5;
     [SerializeField] private int rangeSegments = 64;
 
     private LineRenderer rangeLine;
-    private static Tower currentlySelectedTower;   // 静态选中管理
+    private static Tower currentlySelectedTower;
     public int currentUpgradeCost;
     public int currentSaleCost;
+
+    [HideInInspector] public Tilemap belongingTilemap;
+    [HideInInspector] public Vector3Int cellPosition;
+    [HideInInspector] public TileBase originalTile;
 
     protected virtual void Start()
     {
@@ -66,16 +71,16 @@ public abstract class Tower : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (GameManager.IsPaused) return;
+
         FindTarget();
         HandleShooting();
         OnUpdate();
 
-        // 只有当前被选中的塔才检测点击取消
         if (currentlySelectedTower == this)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                // 忽略 UI 点击
                 if (UnityEngine.EventSystems.EventSystem.current != null &&
                     UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                     return;
@@ -83,7 +88,6 @@ public abstract class Tower : MonoBehaviour
                 Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Collider2D hit = Physics2D.OverlapPoint(mousePos);
 
-                // 如果点击的不是任何 Tower，就取消选中
                 if (hit == null || hit.GetComponent<Tower>() == null)
                 {
                     Deselect();
@@ -172,22 +176,20 @@ public abstract class Tower : MonoBehaviour
         }
     }
 
-    // ==================== 范围指示器（LineRenderer 自动绘制） ====================
+    // ==================== 范围指示器 ====================
 
     public void Select()
     {
-        // 取消之前选中的塔
+        if (GameManager.IsPaused) return;
+
         if (currentlySelectedTower != null && currentlySelectedTower != this)
             currentlySelectedTower.Deselect();
 
         currentlySelectedTower = this;
-        GameManager.Instance.openTowerPanel(transform.position ,gameObject);
+        GameManager.Instance.openTowerPanel(transform.position, gameObject);
         ShowRangeIndicator();
     }
 
-    /// <summary>
-    /// 关闭显示范围
-    /// </summary>
     public void Deselect()
     {
         if (currentlySelectedTower == this)
@@ -197,9 +199,6 @@ public abstract class Tower : MonoBehaviour
         HideRangeIndicator();
     }
 
-    /// <summary>
-    /// 显示范围
-    /// </summary>
     private void ShowRangeIndicator()
     {
         if (rangeLine == null)
@@ -244,9 +243,6 @@ public abstract class Tower : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 根据半径计算缩放比例（供子弹使用）
-    /// </summary>
     protected float CalculateScaleFromRadius(float radius, SpriteRenderer spriteRenderer)
     {
         if (spriteRenderer == null || spriteRenderer.sprite == null) return 1f;
@@ -254,9 +250,10 @@ public abstract class Tower : MonoBehaviour
         return (radius * 2) / spriteSize;
     }
 
-    // 点击塔自身时选中
     private void OnMouseDown()
     {
+        if (GameManager.IsPaused) return;
+
         if (UnityEngine.EventSystems.EventSystem.current != null &&
             UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             return;
@@ -264,8 +261,17 @@ public abstract class Tower : MonoBehaviour
         Select();
     }
 
+    /// <summary>
+    /// 销毁塔
+    /// </summary>
     private void OnDestroy()
     {
+        // 恢复瓦片
+        if (belongingTilemap != null)
+        {
+            belongingTilemap.SetTile(cellPosition, originalTile);
+        }
+
         if (rangeLine != null)
             Destroy(rangeLine.gameObject);
         if (currentlySelectedTower == this)
@@ -278,27 +284,37 @@ public abstract class Tower : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, range);
     }
 
-    /// <summary>
-    /// 升级
-    /// </summary>
     public void Upgrade()
     {
+        if (GameManager.IsPaused) return;
+
         if (level >= maxLevel || GameManager.Instance.currentGold < currentUpgradeCost) return;
+
+        int costToDeduct = currentUpgradeCost;
+
         level++;
         damage += 10;
         range += 0.5f;
         tickInterval -= 0.5f;
-        currentUpgradeCost += level * 10;
+
+        currentUpgradeCost = costToDeduct + level * 10;
         currentSaleCost = currentUpgradeCost - level * 5;
-        GameManager.Instance.updateGold(-currentUpgradeCost);
+
+        GameManager.Instance.updateGold(-costToDeduct);
+        GameManager.Instance.updatePanel(level, currentUpgradeCost, currentSaleCost);
+
+        if (currentlySelectedTower == this && rangeLine != null)
+        {
+            UpdateRangeIndicatorSize();
+        }
     }
 
-    /// <summary>
-    /// 售卖塔
-    /// </summary>
     public void Sale()
     {
+        if (GameManager.IsPaused) return;
+
         GameManager.Instance.updateGold(currentSaleCost);
-        Destroy(gameObject);
+        GameManager.Instance.closeTowerPanel();
+        Destroy(gameObject);  // 这里会触发 OnDestroy，自动恢复瓦片
     }
 }

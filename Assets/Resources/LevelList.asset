@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: LevelList
   m_EditorClassIdentifier: 
   levels:
-  - levelName: 1
+  - levelName: Level_1
     description: "\u7B2C\u4E00\u5173"
-    baseHealth: 200
+    baseHealth: 100
     initialGold: 200
     availableTowers:
     - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
@@ -24,26 +24,31 @@ MonoBehaviour:
     waves:
     - enemies:
       - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 10
+        spawnInterval: 1
+      delayBeforeWave: 10
+  - levelName: Level_2
+    description: "\u7B2C\u4E8C\u5173"
+    baseHealth: 100
+    initialGold: 100
+    availableTowers:
+    - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
+    - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
+    - {fileID: 11400000, guid: 75a30a8a3d059cf4aa0ed556f4cf362d, type: 2}
+    waves:
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
         count: 5
         spawnInterval: 1
       delayBeforeWave: 10
     - enemies:
-      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
-        count: 3
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 2
         spawnInterval: 3
       - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
-        count: 5
+        count: 3
         spawnInterval: 2
-      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
-        count: 10
-        spawnInterval: 2
-      delayBeforeWave: 5
-  - levelName: 2
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
+      delayBeforeWave: 10
   - levelName: 3
     description: 
     baseHealth: 0
