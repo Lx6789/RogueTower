@@ -11,12 +11,6 @@ public class SunBullet : AreaAttackBullet
         burnDuration = duration;
     }
 
-    protected override void ApplyEffect(Enemy enemy)
-    {
-        if (burnDamage > 0)
-            StartCoroutine(ApplyBurn(enemy));
-    }
-
     private System.Collections.IEnumerator ApplyBurn(Enemy enemy)
     {
         float elapsed = 0;

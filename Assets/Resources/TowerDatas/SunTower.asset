@@ -18,12 +18,13 @@ MonoBehaviour:
   type: 1
   maxLevel: 3
   towerPrefab: {fileID: 3497150461636532867, guid: 14c66a85521b4474bbfd80509e62049c, type: 3}
-  damage: 20
+  damage: 80
   range: 1
-  attackInterval: 3
+  attackInterval: 1
   cost: 150
   expandDuration: 1
   tickInterval: 0.3
   bulletSpeed: 0
   bulletPrefab: {fileID: 1331725903188996161, guid: 0fbf31bcab9de0e44bec2657611cb40e, type: 3}
-  BulletEffect: {fileID: 0}
+  BulletEffect: {fileID: 1288496724012797864, guid: 309248ccbbadd3747879b043fd6cf83e, type: 3}
+  AudioClip: {fileID: 8300000, guid: a66b33ded3081e7469227d3e847affd0, type: 3}

@@ -12,7 +12,6 @@ public abstract class FiredBullet : Bullet
     protected virtual void Update()
     {
         if (GameManager.IsPaused) return;
-
         MoveTowardsTarget();
     }
 
@@ -61,7 +60,19 @@ public abstract class FiredBullet : Bullet
             ApplyEffect(enemy);
         }
 
-        PlayHitEffect();
+        // 播放一次性命中特效
+        if (hitEffect != null)
+        {
+            GameObject effect = Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
+            var sfx = effect.GetComponent<SFXPlayerViaManager>();
+            if (sfx != null)
+            {
+                // 一次性命中音效，不循环
+                sfx.InitAndPlay(clip, false);
+            }
+            Destroy(effect, 2f);
+        }
+
         Destroy(gameObject);
     }
 

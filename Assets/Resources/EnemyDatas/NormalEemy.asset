@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: "\u666E\u901A\u654C\u4EBA"
   descript: "\u666E\u901A\u654C\u4EBA"
   enemyType: 0
-  enemyPrefab: {fileID: 682829312452744739, guid: 42c787652f25b0241b785d898bb0a1e1, type: 3}
+  enemyPrefab: {fileID: 1891092138022944256, guid: 08c131c487571ef4d99e513fdaf050c8, type: 3}
   maxHealth: 100
   moveSpeed: 2
   damage: 10
@@ -23,3 +23,36 @@ MonoBehaviour:
   deathEffect: {fileID: 0}
   rewardExp: 10
   rewardGold: 100
+  healthGrowthCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.40523648
+      value: 1.442765
+      inSlope: 0.49999994
+      outSlope: 0.49999994
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1.5
+      inSlope: 0.5
+      outSlope: 0.5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

@@ -19,8 +19,6 @@ MonoBehaviour:
     initialGold: 200
     availableTowers:
     - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
-    - {fileID: 11400000, guid: 75a30a8a3d059cf4aa0ed556f4cf362d, type: 2}
-    - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
     waves:
     - enemies:
       - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
@@ -34,66 +32,87 @@ MonoBehaviour:
     availableTowers:
     - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
     - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
-    - {fileID: 11400000, guid: 75a30a8a3d059cf4aa0ed556f4cf362d, type: 2}
     waves:
-    - enemies:
-      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
-        count: 5
-        spawnInterval: 1
-      delayBeforeWave: 10
     - enemies:
       - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
         count: 2
         spawnInterval: 3
       - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
         count: 3
+        spawnInterval: 3
+      delayBeforeWave: 10
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 5
+        spawnInterval: 2
+      - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
+        count: 5
         spawnInterval: 2
       delayBeforeWave: 10
-  - levelName: 3
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 4
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 5
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 6
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 7
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 8
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 9
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
-  - levelName: 10
-    description: 
-    baseHealth: 0
-    initialGold: 0
-    availableTowers: []
-    waves: []
+  - levelName: Level_3
+    description: "\u7B2C\u4E09\u5173"
+    baseHealth: 100
+    initialGold: 100
+    availableTowers:
+    - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
+    - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
+    - {fileID: 11400000, guid: 75a30a8a3d059cf4aa0ed556f4cf362d, type: 2}
+    waves:
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 5
+        spawnInterval: 3
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 3
+        spawnInterval: 4
+      delayBeforeWave: 10
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 10
+        spawnInterval: 3
+      - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
+        count: 5
+        spawnInterval: 3
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 5
+        spawnInterval: 3
+      delayBeforeWave: 10
+  - levelName: Level_4
+    description: "\u7B2C\u56DB\u5173"
+    baseHealth: 50
+    initialGold: 100
+    availableTowers:
+    - {fileID: 11400000, guid: 60d693ec9711a9f4b9e0abdb21c34259, type: 2}
+    - {fileID: 11400000, guid: 07405c166a7fbb147adaa29e76ecffe2, type: 2}
+    - {fileID: 11400000, guid: 75a30a8a3d059cf4aa0ed556f4cf362d, type: 2}
+    waves:
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 10
+        spawnInterval: 3
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 6
+        spawnInterval: 4
+      delayBeforeWave: 10
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 20
+        spawnInterval: 1
+      - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
+        count: 15
+        spawnInterval: 1
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 20
+        spawnInterval: 1
+      delayBeforeWave: 5
+    - enemies:
+      - enemyData: {fileID: 11400000, guid: 046b8319565e27543b11ffcff21b0822, type: 2}
+        count: 30
+        spawnInterval: 1
+      - enemyData: {fileID: 11400000, guid: d5e27ddafbea2c846bbfa34461f0c40d, type: 2}
+        count: 20
+        spawnInterval: 1
+      - enemyData: {fileID: 11400000, guid: b9eca431fda1545468956742fce91a0d, type: 2}
+        count: 15
+        spawnInterval: 1
+      delayBeforeWave: 5

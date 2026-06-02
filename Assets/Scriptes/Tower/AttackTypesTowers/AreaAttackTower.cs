@@ -14,7 +14,7 @@ public abstract class AreaAttackTower : Tower
 
     protected virtual void InitBullet(AreaAttackBullet bullet)
     {
-        bullet.Init(damage, 0, hitEffect, enemyLayer);
+        bullet.Init(damage, 0, hitEffect, clip, enemyLayer);
         bullet.SetAreaParams(range, expandDuration);
     }
 }

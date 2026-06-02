@@ -16,12 +16,14 @@ public abstract class Enemy : MonoBehaviour
     protected Rigidbody2D rb;
     protected Vector2 moveDirection = Vector2.left;  
     private EnemyData configData;
-    protected Transform baseTransform;  
+    protected Transform baseTransform;
 
-    public void Init(EnemyData data)
+    private HealthBarUI healthBarUI;
+
+    public void Init(EnemyData data, int finalMaxHealth)
     {
         configData = data;
-        maxHealth = data.maxHealth;
+        maxHealth = finalMaxHealth;
         currentHealth = maxHealth;
         moveSpeed = data.moveSpeed;
         damage = data.damage;
@@ -30,6 +32,22 @@ public abstract class Enemy : MonoBehaviour
         if (GameManager.Instance != null)
         {
             baseTransform = GameManager.Instance.baseTransform;
+        }
+
+        // Éú³ÉÑªÌõ
+        GameObject barPrefab = GameManager.Instance.healthBarPrefab;
+        if (barPrefab != null)
+        {
+            Canvas worldCanvas = GameObject.Find("Canvas_WorldSpace")?.GetComponent<Canvas>();
+            if (worldCanvas != null)
+            {
+                GameObject barObj = Instantiate(barPrefab, worldCanvas.transform);
+                healthBarUI = barObj.GetComponent<HealthBarUI>();
+                if (healthBarUI != null)
+                {
+                    healthBarUI.Init(transform, finalMaxHealth);
+                }
+            }
         }
     }
 
@@ -54,10 +72,15 @@ public abstract class Enemy : MonoBehaviour
     {
         if (collision.CompareTag("Base"))
         {
+            if (healthBarUI != null)
+            {
+                Destroy(healthBarUI.gameObject);
+                healthBarUI = null;
+            }
             Base baseComponent = collision.GetComponent<Base>();
             if (baseComponent != null)
             {
-                baseComponent.getDamageOfBase(damage);
+                baseComponent.GetDamageOfBase(damage);
                 WaveManager.Instance?.OnEnemyDied();
                 Destroy(gameObject);
             }
@@ -81,6 +104,8 @@ public abstract class Enemy : MonoBehaviour
         if (currentHealth > 0)
         {
             currentHealth -= damage;
+
+            if (healthBarUI != null) healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
 
             if (currentHealth <= 0)
             {

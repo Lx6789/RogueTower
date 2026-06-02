@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class LevelCard : MonoBehaviour
@@ -7,6 +8,8 @@ public class LevelCard : MonoBehaviour
     public GameObject LockUI;
 
     public int levelIndex;
+
+    public bool isUnlock;
 
     /// <summary>
     /// …Ë÷√πÿø®
@@ -24,6 +27,7 @@ public class LevelCard : MonoBehaviour
     public void setLevelLock(bool isUnlock)
     {
         LockUI.SetActive(!isUnlock);
+        this.isUnlock = isUnlock;
     }
 
     /// <summary>
@@ -31,6 +35,6 @@ public class LevelCard : MonoBehaviour
     /// </summary>
     public void onCLick()
     {
-        GameManager.Instance.LoadSelectLevel(levelIndex);
+        if (isUnlock) GameManager.Instance.LoadSelectLevel(levelIndex);
     }
 }

@@ -48,4 +48,7 @@ public class TowerData : ScriptableObject
 
     [Tooltip("击中特效")]
     public GameObject BulletEffect;
+
+    [Tooltip("子弹击中音效")]
+    public AudioClip AudioClip;
 }

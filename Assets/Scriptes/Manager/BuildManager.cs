@@ -48,16 +48,16 @@ public class BuildManager : MonoBehaviour
 
     private void CreateBuildPanel()
     {
-        if (buildPanelPrefab != null)
+        if (buildPanelPrefab == null || GameManager.Instance == null)
+            return;
+
+        Canvas canvas = GameManager.Instance.mainCanvas;
+        if (canvas != null)
         {
-            Canvas canvas = FindObjectOfType<Canvas>();
-            if (canvas != null)
-            {
-                currentBuildPanel = Instantiate(buildPanelPrefab, canvas.transform);
-                buildPanelUI = currentBuildPanel.GetComponent<BuildPanelUI>();
-                currentBuildPanel.SetActive(false);
-                InitializePanelWithTowers();
-            }
+            currentBuildPanel = Instantiate(buildPanelPrefab, canvas.transform);
+            buildPanelUI = currentBuildPanel.GetComponent<BuildPanelUI>();
+            currentBuildPanel.SetActive(false);
+            InitializePanelWithTowers();
         }
     }
 

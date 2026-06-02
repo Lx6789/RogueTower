@@ -14,16 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelUserDatas:
   - isUnlock: 1
-    score: 100
-  - isUnlock: 1
-    score: 220
-  - isUnlock: 1
-    score: 0
-  - isUnlock: 0
-    score: 0
-  - isUnlock: 0
-    score: 0
-  - isUnlock: 0
     score: 0
   - isUnlock: 0
     score: 0

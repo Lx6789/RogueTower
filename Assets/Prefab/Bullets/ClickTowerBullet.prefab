@@ -161,3 +161,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc97d282e61b3b4469a9c16e9b5a2863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectOffset: {x: 0, y: 0, z: 0}

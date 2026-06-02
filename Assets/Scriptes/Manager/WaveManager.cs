@@ -50,7 +50,7 @@ public class WaveManager : MonoBehaviour
                 yield break;
 
             Debug.Log($"准备第 {waveIndex + 1} 波");
-            yield return StartCoroutine(SpawnWave(currentLevel.waves[waveIndex]));
+            yield return StartCoroutine(SpawnWave(currentLevel.waves[waveIndex], waveIndex, currentLevel.waves.Length));
 
             yield return new WaitUntil(() => enemiesAlive <= 0 || GameManager.Instance.IsGameOver);
 
@@ -73,7 +73,7 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnWave(LevelConfig.WaveData wave)
+    IEnumerator SpawnWave(LevelConfig.WaveData wave, int waveIndex, int totalWaves)
     {
         yield return new WaitForSeconds(wave.delayBeforeWave);
 
@@ -103,12 +103,12 @@ public class WaveManager : MonoBehaviour
             if (GameManager.Instance.IsGameOver)
                 yield break;
 
-            SpawnEnemy(enemyData);
+            SpawnEnemy(enemyData, waveIndex, totalWaves);
             yield return new WaitForSeconds(wave.enemies[0].spawnInterval);
         }
     }
 
-    private void SpawnEnemy(EnemyData enemyData)
+    private void SpawnEnemy(EnemyData enemyData, int waveIndex, int totalWaves)
     {
         if (enemyData.enemyPrefab == null)
         {
@@ -116,16 +116,23 @@ public class WaveManager : MonoBehaviour
             return;
         }
 
+        // 计算成长系数
+        float waveRatio = totalWaves > 1 ? (float)waveIndex / (totalWaves - 1) : 0;
+        float healthMultiplier = enemyData.healthGrowthCurve.Evaluate(waveRatio);
+        int finalMaxHealth = Mathf.RoundToInt(enemyData.maxHealth * healthMultiplier);
+
+        Vector3 newSpawnPoint = new Vector3(spawnPoint.position.x, spawnPoint.position.y + 0.3f, spawnPoint.position.z);
+
         GameObject enemyObj = Instantiate(
             enemyData.enemyPrefab,
-            spawnPoint.position,
+            newSpawnPoint,
             Quaternion.identity
         );
 
         Enemy enemy = enemyObj.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.Init(enemyData);
+            enemy.Init(enemyData, finalMaxHealth);
             enemiesAlive++;
         }
         else

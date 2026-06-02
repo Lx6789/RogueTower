@@ -17,8 +17,10 @@ public class GameManager : MonoBehaviour
 
     [Header("赋值的开始界面的ui")]
     [SerializeField] private GameObject LevelPanel;
+    [SerializeField] private GameObject SettingPanel;
     [SerializeField] private GameObject StartButton;
     [SerializeField] private GameObject ExitButton;
+    [SerializeField] private GameObject SettingButton;
     [SerializeField] private GameObject ReturnButton;
 
     [Header("游戏界面的ui")]
@@ -28,6 +30,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject TowerPanel;
     [SerializeField] private GameObject StopPanel;
     [SerializeField] private GameObject GameOverPanel;
+
+    public Canvas mainCanvas;
+
+    [Header("血条预制体")]
+    public GameObject healthBarPrefab;
 
     [Header("游戏结束面板按钮")]
     [SerializeField] private GameObject nextLevelButton;  // 胜利时显示
@@ -74,18 +81,37 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // 初始场景也由统一的 BGM 逻辑接管
+        PlayBGMForScene(SceneManager.GetActiveScene().name);
         StartGameInit();
     }
 
     /// <summary>
     /// 加载场景
     /// </summary>
-    /// <param name="scene"></param>
-    /// <param name="mode"></param>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RebindUI();
         ResetGameData();
+        // 场景加载完，立刻切换合适的 BGM
+        PlayBGMForScene(scene.name);
+    }
+
+    /// <summary>
+    /// 根据场景名播放对应的背景音乐
+    /// </summary>
+    private void PlayBGMForScene(string sceneName)
+    {
+        if (MusicManager.Instance == null) return;
+
+        if (sceneName == "MainScene")
+        {
+            MusicManager.Instance.PlayMainBGM();
+        }
+        else if (sceneName.StartsWith("Level_"))
+        {
+            MusicManager.Instance.PlayGameBGM();
+        }
     }
 
     /// <summary>
@@ -107,25 +133,30 @@ public class GameManager : MonoBehaviour
         goldText = GameObject.Find("GoldTextUI")?.GetComponent<TMP_Text>();
         gameOverScoreText = GameObject.Find("GameOverScoreText")?.GetComponent<TMP_Text>();
         LevelPanel = GameObject.Find("LevelPanel");
+        SettingPanel = GameObject.Find("SettingPanel");
         StartButton = GameObject.Find("StartButton");
         ExitButton = GameObject.Find("ExitButton");
+        SettingButton = GameObject.Find("SettingButton");
         ReturnButton = GameObject.Find("ReturnButton");
         TowerPanel = GameObject.Find("TowerPanel");
         StopPanel = GameObject.Find("StopPanel");
         GameOverPanel = GameObject.Find("GameOverPanel");
         nextLevelButton = GameObject.Find("NextLevelButton");
+        mainCanvas = GameObject.Find("Canvas")?.GetComponent<Canvas>();
 
         // 初始隐藏面板
         if (TowerPanel) TowerPanel.SetActive(false);
         if (StopPanel) StopPanel.SetActive(false);
         if (GameOverPanel) GameOverPanel.SetActive(false);
         if (LevelPanel) LevelPanel.SetActive(false);
+        if (SettingPanel) SettingPanel.SetActive(false);
 
         // ===== 动态绑定按钮 =====
 
         // 开始界面独立按钮
         BindButton(StartButton, () => GameManager.Instance.onStartButton());
         BindButton(ExitButton, () => GameManager.Instance.onExitButton());
+        BindButton(SettingButton, () => GameManager.Instance.onSettingButton());
         if (LevelPanel != null)
         {
             BindButtonInChildren(LevelPanel, "ReturnButton", () => GameManager.Instance.onReturnButton());
@@ -134,11 +165,19 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("LevelPanel 未找到");
         }
+        if (SettingPanel != null)
+        {
+            BindButtonInChildren(SettingPanel, "SettingReturnButton", () => GameManager.Instance.onReturnButton());
+        }
+        else
+        {
+            Debug.LogWarning("SettingReturnButton 未找到");
+        }
 
         // 游戏中独立按钮（直接在 Canvas 下）
         BindButton(GameObject.Find("PauseButton"), () => GameManager.Instance.onPauseButton());
 
-        // 暂停面板内的按钮（使用深度查找，可处理嵌套层级）
+        // 暂停面板内的按钮
         if (StopPanel != null)
         {
             BindButtonInChildren(StopPanel, "ContinueButton", () => GameManager.Instance.onContinueButton());
@@ -163,17 +202,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 在指定父物体下按名称查找按钮并绑定事件（包括未激活的子物体）
-    /// </summary>
-    /// <param name="parent"></param>
-    /// <param name="buttonName"></param>
-    /// <param name="action"></param>
     private void BindButtonInChildren(GameObject parent, string buttonName, UnityEngine.Events.UnityAction action)
     {
         if (parent == null) return;
 
-        Button[] allButtons = parent.GetComponentsInChildren<Button>(true); // true 包含未激活的
+        Button[] allButtons = parent.GetComponentsInChildren<Button>(true);
         foreach (var btn in allButtons)
         {
             if (btn.gameObject.name == buttonName)
@@ -187,11 +220,6 @@ public class GameManager : MonoBehaviour
         Debug.LogError($"未在 {parent.name} 下找到按钮: {buttonName}");
     }
 
-    /// <summary>
-    /// 简单绑定：直接对传入的 GameObject 进行绑定
-    /// </summary>
-    /// <param name="buttonObj"></param>
-    /// <param name="action"></param>
     private void BindButton(GameObject buttonObj, UnityEngine.Events.UnityAction action)
     {
         if (buttonObj == null)
@@ -238,29 +266,33 @@ public class GameManager : MonoBehaviour
 
     // ==================== UI 按钮方法 ====================
 
-    /// <summary>
-    /// 打开选关页面按钮
-    /// </summary>
     public void onStartButton()
     {
         if (StartButton) StartButton.SetActive(false);
         if (ExitButton) ExitButton.SetActive(false);
+        if (SettingButton) SettingButton.SetActive(false);
         if (LevelPanel) LevelPanel.SetActive(true);
+        if (SettingPanel) SettingPanel.SetActive(false);
     }
 
-    /// <summary>
-    /// 从选关页面转到主页面的按钮
-    /// </summary>
     public void onReturnButton()
     {
         if (StartButton) StartButton.SetActive(true);
         if (ExitButton) ExitButton.SetActive(true);
+        if (SettingButton) SettingButton.SetActive(true);
         if (LevelPanel) LevelPanel.SetActive(false);
+        if (SettingPanel) SettingPanel.SetActive(false);
     }
 
-    /// <summary>
-    /// 退出游戏按钮
-    /// </summary>
+    public void onSettingButton()
+    {
+        if (StartButton) StartButton.SetActive(false);
+        if (ExitButton) ExitButton.SetActive(false);
+        if (SettingButton) SettingButton.SetActive(false);
+        if (LevelPanel) LevelPanel.SetActive(false);
+        if (SettingPanel) SettingPanel.SetActive(true);
+    }
+
     public void onExitButton()
     {
 #if UNITY_EDITOR
@@ -270,9 +302,6 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    /// <summary>
-    /// 暂停游戏按钮
-    /// </summary>
     public void onPauseButton()
     {
         if (isGameOver || IsPaused) return;
@@ -282,9 +311,6 @@ public class GameManager : MonoBehaviour
         if (StopPanel) StopPanel.SetActive(true);
     }
 
-    /// <summary>
-    /// 继续游戏按钮
-    /// </summary>
     public void onContinueButton()
     {
         if (isGameOver) return;
@@ -293,9 +319,6 @@ public class GameManager : MonoBehaviour
         if (StopPanel) StopPanel.SetActive(false);
     }
 
-    /// <summary>
-    /// 返回主页面按钮
-    /// </summary>
     public void OnHomeButton()
     {
         Time.timeScale = 1f;
@@ -303,9 +326,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainScene");
     }
 
-    /// <summary>
-    /// 重新开始按钮
-    /// </summary>
     public void OnRestartButton()
     {
         Debug.Log("OnRestartButton 被调用！");
@@ -316,22 +336,25 @@ public class GameManager : MonoBehaviour
     public void OnNextLevelButton()
     {
         currentLevelIndex++;
-        SceneManager.LoadScene("Level_" + (currentLevelIndex + 1));
+        if (currentLevelIndex >= LevelList.levels.Length)
+        {
+            currentLevelIndex = 0;                // 重置为0，避免主场景越界
+            SceneManager.LoadScene("MainScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("Level_" + (currentLevelIndex + 1));
+        }
     }
 
     // ==================== 关卡数据 ====================
 
-    //打开选择关卡
     public void LoadSelectLevel(int levelIndex)
     {
         currentLevelIndex = levelIndex;
         SceneManager.LoadScene("Level_" + (currentLevelIndex + 1));
     }
 
-    /// <summary>
-    /// 获取当前关卡配置
-    /// </summary>
-    /// <returns></returns>
     public LevelConfig GetCurrentLevelConfig()
     {
         if (LevelList == null || LevelList.levels == null ||
@@ -343,10 +366,6 @@ public class GameManager : MonoBehaviour
         return LevelList.levels[currentLevelIndex];
     }
 
-    /// <summary>
-    /// 设置当前关卡号
-    /// </summary>
-    /// <param name="levelIndex"></param>
     public void SetCurrentLevel(int levelIndex)
     {
         if (LevelList != null && levelIndex < LevelList.levels.Length)
@@ -355,9 +374,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 游戏开始初始化
-    /// </summary>
     private void StartGameInit()
     {
         var levelCfg = GetCurrentLevelConfig();
@@ -371,20 +387,12 @@ public class GameManager : MonoBehaviour
 
     // ==================== 分数/金币 ====================
 
-    /// <summary>
-    /// 修改金币ui
-    /// </summary>
-    /// <param name="gold"></param>
     public void updateGold(int gold)
     {
         currentGold += gold;
         if (goldText) goldText.text = "Gold: " + currentGold;
     }
 
-    /// <summary>
-    /// 修改分数ui
-    /// </summary>
-    /// <param name="scord"></param>
     public void updateScord(int scord)
     {
         currentScore += scord;
@@ -393,11 +401,6 @@ public class GameManager : MonoBehaviour
 
     // ==================== 塔面板 ====================
 
-    /// <summary>
-    /// 打开塔面板
-    /// </summary>
-    /// <param name="worldPosition"></param>
-    /// <param name="tower"></param>
     public void openTowerPanel(Vector3 worldPosition, GameObject tower)
     {
         if (isGameOver || IsPaused) return;
@@ -411,20 +414,11 @@ public class GameManager : MonoBehaviour
         TowerPanel.SetActive(true);
     }
 
-    /// <summary>
-    /// 关闭塔面板
-    /// </summary>
     public void closeTowerPanel()
     {
         if (TowerPanel) TowerPanel.SetActive(false);
     }
 
-    /// <summary>
-    /// 修改分数和金币ui
-    /// </summary>
-    /// <param name="level"></param>
-    /// <param name="currentUpgradeCost"></param>
-    /// <param name="currentSaleCost"></param>
     public void updatePanel(int level, int currentUpgradeCost, int currentSaleCost)
     {
         if (TowerPanel)
@@ -454,7 +448,7 @@ public class GameManager : MonoBehaviour
         {
             UserData.levelUserDatas[currentLevelIndex + 1].UnlockLevel();
             UserData.levelUserDatas[currentLevelIndex].setScore(currentScore);
-        } 
+        }
         else
         {
             UserData.levelUserDatas[currentLevelIndex].setScore(currentScore);

@@ -15,6 +15,7 @@ public abstract class Tower : MonoBehaviour
     protected GameObject hitEffect;
     protected float expandDuration;
     protected float tickInterval;
+    protected AudioClip clip;
 
     protected float fireTimer;
     protected Transform currentTarget;
@@ -104,6 +105,7 @@ public abstract class Tower : MonoBehaviour
         bulletPrefab = data.bulletPrefab;
         damage = data.damage;
         hitEffect = data.BulletEffect;
+        clip = data.AudioClip;
         bulletSpeed = data.bulletSpeed;
         expandDuration = data.expandDuration;
         tickInterval = data.tickInterval;
@@ -116,6 +118,9 @@ public abstract class Tower : MonoBehaviour
     protected virtual void OnUpdate() { }
     protected abstract void Shoot();
 
+    /// <summary>
+    /// 寻找攻击目标
+    /// </summary>
     protected virtual void FindTarget()
     {
         if (lockTarget && currentTarget != null)
@@ -145,6 +150,9 @@ public abstract class Tower : MonoBehaviour
         currentTarget = newTarget;
     }
 
+    /// <summary>
+    /// 射击
+    /// </summary>
     protected virtual void HandleShooting()
     {
         if (currentTarget == null)

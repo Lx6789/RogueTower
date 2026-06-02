@@ -26,7 +26,7 @@ public abstract class ContinuousAttackTower : Tower
         int tickDamage = Mathf.RoundToInt(damage * tickInterval);
         if (tickDamage <= 0) tickDamage = 1;
 
-        bullet.Init(damage, 0, hitEffect, enemyLayer, obstacleLayer);
+        bullet.Init(damage, 0, hitEffect, clip, enemyLayer, obstacleLayer);
         bullet.SetContinuousParams(currentTarget, range, tickInterval, tickDamage, transform);
     }
 

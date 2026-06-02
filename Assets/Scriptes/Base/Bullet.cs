@@ -8,11 +8,12 @@ public abstract class Bullet : MonoBehaviour
     protected GameObject hitEffect;
     protected LayerMask targetLayer;
     protected LayerMask obstacleLayer;
+    protected AudioClip clip;
 
     protected Rigidbody2D rb;
     protected SpriteRenderer spriteRenderer;
 
-    public virtual void Init(int damage, float speed, GameObject effect,
+    public virtual void Init(int damage, float speed, GameObject effect, AudioClip clip,
         LayerMask targetLayer = default, LayerMask obstacleLayer = default)
     {
         this.damage = damage;
@@ -20,6 +21,7 @@ public abstract class Bullet : MonoBehaviour
         this.hitEffect = effect;
         this.targetLayer = targetLayer;
         this.obstacleLayer = obstacleLayer;
+        this.clip = clip;
     }
 
     protected virtual void Awake()
@@ -28,18 +30,21 @@ public abstract class Bullet : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    /// <summary>
+    /// 对敌人造成伤害
+    /// </summary>
+    /// <param name="enemy"></param>
     protected void DealDamageToEnemy(Enemy enemy)
     {
         if (enemy != null)
             enemy.TakeDamage(damage);
     }
 
-    protected void PlayHitEffect()
-    {
-        if (hitEffect != null)
-            Instantiate(hitEffect, transform.position, Quaternion.identity);
-    }
-
+    /// <summary>
+    /// 判断是否是敌人
+    /// </summary>
+    /// <param name="collision"></param>
+    /// <returns></returns>
     protected bool IsEnemy(Collider2D collision)
     {
         if (!collision.CompareTag("Enemy")) return false;

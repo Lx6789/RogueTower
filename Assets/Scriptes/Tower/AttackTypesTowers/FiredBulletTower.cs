@@ -20,7 +20,7 @@ public abstract class FiredBulletTower : Tower
 
     protected virtual void InitBullet(FiredBullet bullet)
     {
-        bullet.Init(damage, bulletSpeed, hitEffect, enemyLayer, obstacleLayer);
+        bullet.Init(damage, bulletSpeed, hitEffect, clip, enemyLayer, obstacleLayer);
         bullet.SetTarget(currentTarget);
     }
 }

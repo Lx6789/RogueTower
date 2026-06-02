@@ -48,4 +48,7 @@ public class EnemyData : ScriptableObject
     [Tooltip("击杀后获得的金币")]
     [Min(0)]
     public int rewardGold = 10;
+
+    [Tooltip("成长曲线")]
+    public AnimationCurve healthGrowthCurve = AnimationCurve.Linear(0, 1, 1, 1.5f);
 }

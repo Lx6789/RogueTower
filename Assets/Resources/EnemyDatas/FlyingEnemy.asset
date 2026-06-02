@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: "\u7A7A\u4E2D\u98DE\u4EBA"
   descript: "\u4F1A\u98DE\u7684\u654C\u4EBA\uFF0C\u4ECE\u751F\u6210\u70B9\u76F4\u7EBF\u98DE\u5230\u57FA\u5730"
   enemyType: 3
-  enemyPrefab: {fileID: 3791993280836493789, guid: 0ef9fcef3771bd04ea4573d11b855100, type: 3}
+  enemyPrefab: {fileID: 1891092138022944256, guid: 1b13e07a9ffd6494eb82bffe6d8a6083, type: 3}
   maxHealth: 100
   moveSpeed: 3
   damage: 10
