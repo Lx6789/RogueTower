@@ -27,6 +27,14 @@ public abstract class Enemy : MonoBehaviour
         currentHealth = maxHealth;
         moveSpeed = data.moveSpeed;
         damage = data.damage;
+        moveDirection = Vector2.left;
+
+        // 重置刚体
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
 
         // 初始化时自动获取基地引用
         if (GameManager.Instance != null)
@@ -81,9 +89,10 @@ public abstract class Enemy : MonoBehaviour
             if (baseComponent != null)
             {
                 baseComponent.GetDamageOfBase(damage);
-                WaveManager.Instance?.OnEnemyDied();
-                Destroy(gameObject);
             }
+            WaveManager.Instance?.OnEnemyDied();
+
+            ObjectPool.Instance.Release(gameObject, configData.enemyPrefab);
         }
     }
 
@@ -105,6 +114,8 @@ public abstract class Enemy : MonoBehaviour
         {
             currentHealth -= damage;
 
+            ShowDamageNumber(damage);
+
             if (healthBarUI != null) healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
 
             if (currentHealth <= 0)
@@ -119,10 +130,19 @@ public abstract class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        WaveManager.Instance.OnEnemyDied();
-        GameManager.Instance.updateScord(configData.rewardExp);
+        // 销毁血条
+        if (healthBarUI != null)
+        {
+            Destroy(healthBarUI.gameObject);
+            healthBarUI = null;
+        }
+        
+        GameManager.Instance.updateScore(configData.rewardExp);
         GameManager.Instance.updateGold(configData.rewardGold);
-        Destroy(gameObject);
+
+        WaveManager.Instance?.OnEnemyDied();
+
+        ObjectPool.Instance.Release(gameObject, configData.enemyPrefab);
     }
 
     /// <summary>
@@ -170,6 +190,27 @@ public abstract class Enemy : MonoBehaviour
                 int index = Random.Range(0, availableDirections.Count);
                 moveDirection = availableDirections[index];
             }
+        }
+    }
+
+    private void ShowDamageNumber(int damage)
+    {
+        // 获取伤害数字预制体引用（可以放在 GameManager 或 EnemyData 里）
+        GameObject popupPrefab = GameManager.Instance.damagePopupPrefab; // 需要你在 GameManager 里添加这个字段
+        if (popupPrefab == null) return;
+
+        // 计算世界位置（头顶偏移）
+        Vector3 popupPos = transform.position + Vector3.up * 1.5f; // 根据你精灵大小调整
+
+        // 从对象池取出
+        GameObject popupObj = ObjectPool.Instance.Get(popupPrefab, popupPos, Quaternion.identity);
+        DamagePopup popup = popupObj.GetComponent<DamagePopup>();
+        if (popup != null)
+        {
+            Color color = Color.white;
+            // 可以根据暴击或伤害类型改颜色，例如：
+            // if (isCritical) color = Color.yellow;
+            popup.Init(damage, popupPos, color, popupPrefab);
         }
     }
 }

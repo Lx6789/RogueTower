@@ -15,11 +15,10 @@ public class MusicManager : MonoBehaviour
 
     [Header("音效音量")]
     [Range(0f, 1f)]
-    [SerializeField] private float bgmVolume = 0.5f;
+    [SerializeField] private float bgmVolume = 1f;
     [Range(0f, 1f)]
     [SerializeField] private float sfxVolume = 1f;
 
-    // 公开音量，供其他脚本（如特效中介）读取
     public float CurrentSFXVolume => sfxVolume;
     public float CurrentBGMVolume => bgmVolume;
 
@@ -53,6 +52,12 @@ public class MusicManager : MonoBehaviour
             sfxLoopSource = gameObject.AddComponent<AudioSource>();
             sfxLoopSource.playOnAwake = false;
             sfxLoopSource.loop = true;
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.UserData != null)
+        {
+            bgmVolume = GameManager.Instance.UserData.bgmVolume;
+            sfxVolume = GameManager.Instance.UserData.sfxVolume;
         }
 
         ApplyVolumes();
@@ -107,12 +112,14 @@ public class MusicManager : MonoBehaviour
     {
         bgmVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
+        GameManager.Instance.saveBGMVolume(bgmVolume);
     }
 
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
+        GameManager.Instance.saveSFXVolume(sfxVolume);
     }
 
     private void ApplyVolumes()

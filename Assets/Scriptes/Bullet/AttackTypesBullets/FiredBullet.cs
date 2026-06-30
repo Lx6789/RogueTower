@@ -19,7 +19,7 @@ public abstract class FiredBullet : Bullet
     {
         if (target == null || !target.gameObject.activeInHierarchy)
         {
-            Destroy(gameObject);
+            ReleaseBullet();
             return;
         }
 
@@ -30,7 +30,7 @@ public abstract class FiredBullet : Bullet
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 0.5f, obstacleLayer);
             if (hit.collider != null)
             {
-                Destroy(gameObject);
+                ReleaseBullet();
                 return;
             }
         }
@@ -73,7 +73,7 @@ public abstract class FiredBullet : Bullet
             Destroy(effect, 2f);
         }
 
-        Destroy(gameObject);
+        ReleaseBullet();
     }
 
     protected virtual void ApplyEffect(Enemy enemy) { }

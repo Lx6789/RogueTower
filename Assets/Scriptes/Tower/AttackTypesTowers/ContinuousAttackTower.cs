@@ -11,12 +11,11 @@ public abstract class ContinuousAttackTower : Tower
         // 如果已有子弹，不重复生成（持续存在）
         if (currentBulletObj != null) return;
 
-        // 在射击点生成子弹
-        currentBulletObj = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        currentBulletObj = ObjectPool.Instance.Get(bulletPrefab, shootPoint.position, Quaternion.identity);
         ContinuousAttackBullet bullet = currentBulletObj.GetComponent<ContinuousAttackBullet>();
         if (bullet != null)
         {
-            InitBullet(bullet);             // 调用子类可重写的初始化
+            InitBullet(bullet); 
         }
     }
 
@@ -26,16 +25,15 @@ public abstract class ContinuousAttackTower : Tower
         int tickDamage = Mathf.RoundToInt(damage * tickInterval);
         if (tickDamage <= 0) tickDamage = 1;
 
-        bullet.Init(damage, 0, hitEffect, clip, enemyLayer, obstacleLayer);
+        bullet.Init(damage, 0, hitEffect, clip, bulletPrefab, enemyLayer, obstacleLayer);
         bullet.SetContinuousParams(currentTarget, range, tickInterval, tickDamage, transform);
     }
 
     protected override void OnUpdate()
     {
-        // 目标消失时销毁子弹
         if (currentBulletObj != null && currentTarget == null)
         {
-            Destroy(currentBulletObj);
+            ObjectPool.Instance.Release(currentBulletObj, bulletPrefab);
             currentBulletObj = null;
         }
     }

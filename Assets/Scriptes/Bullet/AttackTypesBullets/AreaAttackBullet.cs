@@ -41,7 +41,7 @@ public abstract class AreaAttackBullet : Bullet
         if (progress >= 1f)
         {
             DealFinalDamage();
-            Destroy(gameObject);
+            ReleaseBullet();
         }
     }
 
@@ -110,7 +110,6 @@ public abstract class AreaAttackBullet : Bullet
             sfx.InitAndPlay(clip, false);
         }
 
-        // 粒子系统设置保持不变...
         ParticleSystem ps = effect.GetComponent<ParticleSystem>();
         if (ps != null)
         {
@@ -136,9 +135,10 @@ public abstract class AreaAttackBullet : Bullet
         attachedEffects.Clear();
     }
 
-    protected virtual void OnDestroy()
+    protected virtual void OnDisable()
     {
         DestroyAllAttachedEffects();
+        hitEnemies.Clear();
     }
 
     protected virtual void ApplyEffect(Enemy enemy) { }

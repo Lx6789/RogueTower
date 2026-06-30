@@ -425,6 +425,7 @@ MonoBehaviour:
   GameOverPanel: {fileID: 0}
   mainCanvas: {fileID: 0}
   healthBarPrefab: {fileID: 6344586455411507213, guid: bb02481e9e45b5e4d8307180f613cf89, type: 3}
+  damagePopupPrefab: {fileID: 7645604575829445062, guid: b18c158d5e6ce614f91f2ff4d997b3c7, type: 3}
   nextLevelButton: {fileID: 0}
   baseTransform: {fileID: 1937035010673887468, guid: bd0bb8f3a3af29242973a21dc19c7e7a, type: 3}
   currentLevelIndex: 0
@@ -2274,6 +2275,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1106842086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1106842087}
+  - component: {fileID: 1106842088}
+  m_Layer: 0
+  m_Name: ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1106842087
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106842086}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1280, y: 720, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1106842088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106842086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4b0b2b011529b1429d4dec733a421cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1229001095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4266,3 +4311,4 @@ SceneRoots:
   - {fileID: 153375768}
   - {fileID: 1048181376}
   - {fileID: 999557077}
+  - {fileID: 1106842087}

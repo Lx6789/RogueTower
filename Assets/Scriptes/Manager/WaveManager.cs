@@ -123,7 +123,7 @@ public class WaveManager : MonoBehaviour
 
         Vector3 newSpawnPoint = new Vector3(spawnPoint.position.x, spawnPoint.position.y + 0.3f, spawnPoint.position.z);
 
-        GameObject enemyObj = Instantiate(
+        GameObject enemyObj = ObjectPool.Instance.Get(
             enemyData.enemyPrefab,
             newSpawnPoint,
             Quaternion.identity

@@ -6,7 +6,7 @@ public abstract class AreaAttackTower : Tower
     {
         if (currentTarget == null || bulletPrefab == null) return;
 
-        GameObject bulletObj = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        GameObject bulletObj = ObjectPool.Instance.Get(bulletPrefab, shootPoint.position, Quaternion.identity);
         AreaAttackBullet bullet = bulletObj.GetComponent<AreaAttackBullet>();
         if (bullet != null)
             InitBullet(bullet);
@@ -14,7 +14,7 @@ public abstract class AreaAttackTower : Tower
 
     protected virtual void InitBullet(AreaAttackBullet bullet)
     {
-        bullet.Init(damage, 0, hitEffect, clip, enemyLayer);
+        bullet.Init(damage, 0, hitEffect, clip, bulletPrefab, enemyLayer);
         bullet.SetAreaParams(range, expandDuration);
     }
 }

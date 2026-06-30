@@ -10,10 +10,12 @@ public abstract class Bullet : MonoBehaviour
     protected LayerMask obstacleLayer;
     protected AudioClip clip;
 
+    protected GameObject selfPrefab;
+
     protected Rigidbody2D rb;
     protected SpriteRenderer spriteRenderer;
 
-    public virtual void Init(int damage, float speed, GameObject effect, AudioClip clip,
+    public virtual void Init(int damage, float speed, GameObject effect, AudioClip clip, GameObject bulletPrefab,
         LayerMask targetLayer = default, LayerMask obstacleLayer = default)
     {
         this.damage = damage;
@@ -22,6 +24,7 @@ public abstract class Bullet : MonoBehaviour
         this.targetLayer = targetLayer;
         this.obstacleLayer = obstacleLayer;
         this.clip = clip;
+        this.selfPrefab = bulletPrefab;
     }
 
     protected virtual void Awake()
@@ -50,5 +53,10 @@ public abstract class Bullet : MonoBehaviour
         if (!collision.CompareTag("Enemy")) return false;
         if (targetLayer != 0 && (targetLayer.value & (1 << collision.gameObject.layer)) == 0) return false;
         return true;
+    }
+
+    protected void ReleaseBullet()
+    {
+        ObjectPool.Instance.Release(gameObject, selfPrefab);
     }
 }

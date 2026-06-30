@@ -30,7 +30,7 @@ public class Base : MonoBehaviour
 
 
     /// <summary>
-    /// 对塔造成伤害
+    /// 对城堡造成伤害
     /// </summary>
     /// <param name="damage"></param>
     public void GetDamageOfBase(int damage)

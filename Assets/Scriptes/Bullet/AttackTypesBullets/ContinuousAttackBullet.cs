@@ -64,7 +64,7 @@ public abstract class ContinuousAttackBullet : Bullet
 
         if (target == null || !target.gameObject.activeInHierarchy)
         {
-            Destroy(gameObject);
+            ReleaseBullet();
             return;
         }
 
@@ -75,7 +75,7 @@ public abstract class ContinuousAttackBullet : Bullet
             if (outOfRangeTimer >= outOfRangeThreshold)
             {
                 if (spriteRenderer != null) spriteRenderer.enabled = false;
-                Destroy(gameObject);
+                ReleaseBullet();
                 return;
             }
         }
@@ -135,11 +135,8 @@ public abstract class ContinuousAttackBullet : Bullet
         var sfx = continuousEffect.GetComponent<SFXPlayerViaManager>();
         if (sfx != null)
         {
-            // 持续攻击也可能是循环音效
             sfx.InitAndPlay(clip, true);
         }
-
-        // 粒子系统设置...
     }
 
     // 销毁持续特效
@@ -155,7 +152,7 @@ public abstract class ContinuousAttackBullet : Bullet
         }
     }
 
-    protected virtual void OnDestroy()
+    protected virtual void OnDisable()
     {
         DestroyContinuousEffect();
     }

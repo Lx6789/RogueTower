@@ -5,6 +5,8 @@ using UnityEngine;
 public class UserData : ScriptableObject
 {
     public LevelUserData[] levelUserDatas;
+    public float bgmVolume = 1f;
+    public float sfxVolume = 1f;
 }
 
 [System.Serializable]

@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public LevelList LevelList;
     public UserData UserData;
 
+    private UserData defaultUserData;
+
     [Header("公用ui")]
     [Tooltip("面板")]
     [SerializeField] private Canvas canvas;
@@ -22,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject ExitButton;
     [SerializeField] private GameObject SettingButton;
     [SerializeField] private GameObject ReturnButton;
+    [SerializeField] private GameObject InitializeDataButton;
 
     [Header("游戏界面的ui")]
     [SerializeField] private TMP_Text scoreText;
@@ -35,6 +38,9 @@ public class GameManager : MonoBehaviour
 
     [Header("血条预制体")]
     public GameObject healthBarPrefab;
+
+    [Header("伤害数字预制体")]
+    public GameObject damagePopupPrefab;
 
     [Header("游戏结束面板按钮")]
     [SerializeField] private GameObject nextLevelButton;  // 胜利时显示
@@ -71,6 +77,21 @@ public class GameManager : MonoBehaviour
 
         LevelList = Resources.Load<LevelList>("LevelList");
         UserData = Resources.Load<UserData>("UserData");
+
+        defaultUserData = Instantiate(UserData);
+
+        // 尝试加载本地存档，覆盖 ScriptableObject 的默认值
+        if (UserData != null)
+        {
+            if (SaveManager.Load(UserData))
+            {
+                Debug.Log("存档加载成功，已恢复游戏进度");
+            }
+            else
+            {
+                Debug.Log("未找到存档，使用默认数据");
+            }
+        }
     }
 
     private void OnDestroy()
@@ -91,6 +112,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (ObjectPool.Instance != null)
+            ObjectPool.Instance.ReleaseAllActive();
+
         RebindUI();
         ResetGameData();
         // 场景加载完，立刻切换合适的 BGM
@@ -137,6 +161,7 @@ public class GameManager : MonoBehaviour
         StartButton = GameObject.Find("StartButton");
         ExitButton = GameObject.Find("ExitButton");
         SettingButton = GameObject.Find("SettingButton");
+        InitializeDataButton = GameObject.Find("InitializeDataButton");
         ReturnButton = GameObject.Find("ReturnButton");
         TowerPanel = GameObject.Find("TowerPanel");
         StopPanel = GameObject.Find("StopPanel");
@@ -168,6 +193,7 @@ public class GameManager : MonoBehaviour
         if (SettingPanel != null)
         {
             BindButtonInChildren(SettingPanel, "SettingReturnButton", () => GameManager.Instance.onReturnButton());
+            BindButtonInChildren(SettingPanel, "InitializeDataButton", () => GameManager.Instance.onInitializeDataButton());
         }
         else
         {
@@ -264,6 +290,18 @@ public class GameManager : MonoBehaviour
         if (scoreText) scoreText.text = "Score: " + currentScore;
     }
 
+    public void saveBGMVolume(float bgmVolume)
+    {
+        UserData.bgmVolume = bgmVolume;
+        SaveManager.Save(UserData);
+    }
+
+    public void saveSFXVolume(float SFXVolume)
+    {
+        UserData.sfxVolume = SFXVolume;
+        SaveManager.Save(UserData);
+    }
+
     // ==================== UI 按钮方法 ====================
 
     public void onStartButton()
@@ -282,6 +320,24 @@ public class GameManager : MonoBehaviour
         if (SettingButton) SettingButton.SetActive(true);
         if (LevelPanel) LevelPanel.SetActive(false);
         if (SettingPanel) SettingPanel.SetActive(false);
+
+        SaveManager.Save(UserData);
+    }
+
+    public void onInitializeDataButton()
+    {
+        SaveManager.DeleteSave();
+        // 从默认副本拷贝所有字段回到 UserData
+        UserData.levelUserDatas = defaultUserData.levelUserDatas;
+        UserData.bgmVolume = defaultUserData.bgmVolume;
+        UserData.sfxVolume = defaultUserData.sfxVolume;
+
+        // 刷新设置面板的滑块
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.SetBGMVolume(UserData.bgmVolume);
+            MusicManager.Instance.SetSFXVolume(UserData.sfxVolume);
+        }
     }
 
     public void onSettingButton()
@@ -323,6 +379,8 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         IsPaused = false;
+        ObjectPool.Instance?.ReleaseAllActive();
+        SaveManager.Save(UserData);
         SceneManager.LoadScene("MainScene");
     }
 
@@ -330,6 +388,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("OnRestartButton 被调用！");
         ResetGameData();
+        ObjectPool.Instance?.ReleaseAllActive();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -393,7 +452,7 @@ public class GameManager : MonoBehaviour
         if (goldText) goldText.text = "Gold: " + currentGold;
     }
 
-    public void updateScord(int scord)
+    public void updateScore(int scord)
     {
         currentScore += scord;
         if (scoreText) scoreText.text = "Score: " + currentScore;
@@ -453,6 +512,7 @@ public class GameManager : MonoBehaviour
         {
             UserData.levelUserDatas[currentLevelIndex].setScore(currentScore);
         }
+        SaveManager.Save(UserData);
     }
 
     // ==================== 工具方法 ====================
